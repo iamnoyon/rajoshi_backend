@@ -1,0 +1,15 @@
+export declare class UpdateProductDto {
+    name?: string;
+    slug?: string;
+    description?: string;
+    price?: number;
+    discountPrice?: number;
+    stock?: number;
+    sku?: string;
+    shortnote?: string;
+    features?: string[];
+    images?: string[];
+    isActive?: boolean;
+    isFeatured?: boolean;
+    categoryId?: string;
+}
