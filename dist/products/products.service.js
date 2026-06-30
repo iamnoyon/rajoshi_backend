@@ -57,7 +57,7 @@ let ProductsService = class ProductsService {
             take: limit,
         });
         return {
-            data: products,
+            content: products,
             total,
             page,
             limit,

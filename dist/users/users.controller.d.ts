@@ -6,7 +6,7 @@ export declare class UsersController {
     private usersService;
     constructor(usersService: UsersService);
     findAll(query: PaginationDto): Promise<{
-        data: {
+        content: {
             id: string;
             name: string;
             email: string;

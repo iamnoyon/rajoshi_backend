@@ -125,7 +125,7 @@ export class OrdersService {
     });
 
     return {
-      data: orders,
+      content: orders,
       total,
       page,
       limit,
@@ -147,7 +147,7 @@ export class OrdersService {
     });
 
     return {
-      data: orders,
+      content: orders,
       total,
       page,
       limit,

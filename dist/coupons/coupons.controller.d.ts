@@ -6,7 +6,7 @@ export declare class CouponsController {
     private couponsService;
     constructor(couponsService: CouponsService);
     findAll(query: PaginationDto): Promise<{
-        data: import("../entities/coupon.entity").Coupon[];
+        content: import("../entities/coupon.entity").Coupon[];
         total: number;
         page: number;
         limit: number;

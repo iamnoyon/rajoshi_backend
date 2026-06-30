@@ -116,7 +116,7 @@ let OrdersService = class OrdersService {
             take: limit,
         });
         return {
-            data: orders,
+            content: orders,
             total,
             page,
             limit,
@@ -136,7 +136,7 @@ let OrdersService = class OrdersService {
             take: limit,
         });
         return {
-            data: orders,
+            content: orders,
             total,
             page,
             limit,

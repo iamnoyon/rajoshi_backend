@@ -6,14 +6,14 @@ export declare class ReviewsController {
     private reviewsService;
     constructor(reviewsService: ReviewsService);
     findByProduct(productId: string, query: PaginationDto): Promise<{
-        data: import("../entities/review.entity").Review[];
+        content: import("../entities/review.entity").Review[];
         total: number;
         page: number;
         limit: number;
         totalPages: number;
     }>;
     findAll(query: PaginationDto): Promise<{
-        data: import("../entities/review.entity").Review[];
+        content: import("../entities/review.entity").Review[];
         total: number;
         page: number;
         limit: number;

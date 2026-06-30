@@ -26,7 +26,7 @@ export class UsersService {
     const sanitized = users.map(({ password, refreshToken, emailVerificationToken, passwordResetToken, passwordResetExpires, ...user }) => user);
 
     return {
-      data: sanitized,
+      content: sanitized,
       total,
       page,
       limit,

@@ -8,14 +8,14 @@ export declare class ReviewsService {
     private productRepository;
     constructor(reviewRepository: Repository<Review>, productRepository: Repository<Product>);
     findByProduct(productId: string, page?: number, limit?: number): Promise<{
-        data: Review[];
+        content: Review[];
         total: number;
         page: number;
         limit: number;
         totalPages: number;
     }>;
     findAll(page?: number, limit?: number): Promise<{
-        data: Review[];
+        content: Review[];
         total: number;
         page: number;
         limit: number;

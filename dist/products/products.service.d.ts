@@ -9,7 +9,7 @@ export declare class ProductsService {
     private productImageRepository;
     constructor(productRepository: Repository<Product>, productImageRepository: Repository<ProductImage>);
     findAll(query: ProductQueryDto): Promise<{
-        data: Product[];
+        content: Product[];
         total: number;
         page: number;
         limit: number;

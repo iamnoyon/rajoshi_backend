@@ -35,7 +35,7 @@ let ReviewsService = class ReviewsService {
             take: limit,
         });
         return {
-            data: reviews,
+            content: reviews,
             total,
             page,
             limit,
@@ -51,7 +51,7 @@ let ReviewsService = class ReviewsService {
             take: limit,
         });
         return {
-            data: reviews,
+            content: reviews,
             total,
             page,
             limit,

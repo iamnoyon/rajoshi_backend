@@ -30,7 +30,7 @@ export class ReviewsService {
     });
 
     return {
-      data: reviews,
+      content: reviews,
       total,
       page,
       limit,
@@ -48,7 +48,7 @@ export class ReviewsService {
     });
 
     return {
-      data: reviews,
+      content: reviews,
       total,
       page,
       limit,

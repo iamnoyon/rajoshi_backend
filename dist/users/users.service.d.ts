@@ -4,7 +4,7 @@ export declare class UsersService {
     private userRepository;
     constructor(userRepository: Repository<User>);
     findAll(page?: number, limit?: number): Promise<{
-        data: {
+        content: {
             id: string;
             name: string;
             email: string;

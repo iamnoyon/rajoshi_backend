@@ -6,7 +6,7 @@ export declare class CouponsService {
     private couponRepository;
     constructor(couponRepository: Repository<Coupon>);
     findAll(page?: number, limit?: number): Promise<{
-        data: Coupon[];
+        content: Coupon[];
         total: number;
         page: number;
         limit: number;

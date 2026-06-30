@@ -6,7 +6,7 @@ export declare class ProductsController {
     private productsService;
     constructor(productsService: ProductsService);
     findAll(query: ProductQueryDto): Promise<{
-        data: import("../entities/product.entity").Product[];
+        content: import("../entities/product.entity").Product[];
         total: number;
         page: number;
         limit: number;

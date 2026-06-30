@@ -26,7 +26,7 @@ export class CouponsService {
     });
 
     return {
-      data: coupons,
+      content: coupons,
       total,
       page,
       limit,

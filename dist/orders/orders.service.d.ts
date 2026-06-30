@@ -16,14 +16,14 @@ export declare class OrdersService {
     private generateOrderNumber;
     create(userId: string, dto: CreateOrderDto): Promise<Order>;
     findMyOrders(userId: string, page?: number, limit?: number): Promise<{
-        data: Order[];
+        content: Order[];
         total: number;
         page: number;
         limit: number;
         totalPages: number;
     }>;
     findAll(page?: number, limit?: number, status?: OrderStatus): Promise<{
-        data: Order[];
+        content: Order[];
         total: number;
         page: number;
         limit: number;

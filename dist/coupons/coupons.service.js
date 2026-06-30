@@ -30,7 +30,7 @@ let CouponsService = class CouponsService {
             take: limit,
         });
         return {
-            data: coupons,
+            content: coupons,
             total,
             page,
             limit,

@@ -58,7 +58,7 @@ export class ProductsService {
     });
 
     return {
-      data: products,
+      content: products,
       total,
       page,
       limit,
