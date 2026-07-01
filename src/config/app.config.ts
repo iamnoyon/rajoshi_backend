@@ -8,8 +8,11 @@ export default () => ({
     database: process.env.DATABASE_NAME || 'ecommerce',
   },
   jwt: {
-    secret: process.env.JWT_SECRET || 'super-secret-jwt-key-change-in-production',
-    refreshSecret: process.env.JWT_REFRESH_SECRET || 'super-secret-refresh-key-change-in-production',
+    secret:
+      process.env.JWT_SECRET || 'super-secret-jwt-key-change-in-production',
+    refreshSecret:
+      process.env.JWT_REFRESH_SECRET ||
+      'super-secret-refresh-key-change-in-production',
     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   },
@@ -28,7 +31,8 @@ export default () => ({
   },
   sslcommerz: {
     storeId: process.env.SSLCOMMERZ_STORE_ID || 'your-store-id',
-    storePassword: process.env.SSLCOMMERZ_STORE_PASSWORD || 'your-store-password',
+    storePassword:
+      process.env.SSLCOMMERZ_STORE_PASSWORD || 'your-store-password',
   },
   bkash: {
     appKey: process.env.BKASH_APP_KEY || 'your-app-key',

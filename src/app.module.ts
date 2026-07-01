@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
 import appConfig from './config/app.config';
 import { typeOrmConfig } from './config/typeorm.config';
 import { User } from './entities/user.entity';
@@ -32,10 +31,12 @@ import { DashboardModule } from './dashboard/dashboard.module';
       useFactory: typeOrmConfig,
     }),
     TypeOrmModule.forFeature([User]),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 100,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
     CommonModule,
     AuthModule,
     UsersModule,

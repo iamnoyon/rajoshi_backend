@@ -46,10 +46,12 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: typeorm_config_1.typeOrmConfig,
             }),
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
-            throttler_1.ThrottlerModule.forRoot([{
+            throttler_1.ThrottlerModule.forRoot([
+                {
                     ttl: 60000,
                     limit: 100,
-                }]),
+                },
+            ]),
             common_module_1.CommonModule,
             auth_module_1.AuthModule,
             users_module_1.UsersModule,

@@ -13,7 +13,9 @@ import { Wishlist } from '../entities/wishlist.entity';
 import { Cart } from '../entities/cart.entity';
 import { Address } from '../entities/address.entity';
 
-export const typeOrmConfig = (configService: ConfigService): TypeOrmModuleOptions => ({
+export const typeOrmConfig = (
+  configService: ConfigService,
+): TypeOrmModuleOptions => ({
   type: 'postgres',
   host: configService.get<string>('database.host'),
   port: configService.get<number>('database.port'),
