@@ -5,7 +5,8 @@ import { Cart } from './cart.entity';
 import { Address } from './address.entity';
 export declare enum UserRole {
     CUSTOMER = "customer",
-    ADMIN = "admin"
+    ADMIN = "admin",
+    Manager = "manager"
 }
 export declare class User {
     id: string;

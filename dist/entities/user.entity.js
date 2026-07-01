@@ -21,6 +21,7 @@ var UserRole;
 (function (UserRole) {
     UserRole["CUSTOMER"] = "customer";
     UserRole["ADMIN"] = "admin";
+    UserRole["Manager"] = "manager";
 })(UserRole || (exports.UserRole = UserRole = {}));
 let User = class User {
     id;

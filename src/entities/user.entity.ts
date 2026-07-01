@@ -16,6 +16,7 @@ import { Address } from './address.entity';
 export enum UserRole {
   CUSTOMER = 'customer',
   ADMIN = 'admin',
+  Manager = 'manager',
 }
 
 @Entity('users')
