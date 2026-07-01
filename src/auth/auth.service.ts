@@ -4,6 +4,8 @@ import {
   ConflictException,
   BadRequestException,
   NotFoundException,
+  ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,15 +16,19 @@ import { User, UserRole } from '../entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { MailService } from '../mail/mail.service';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailService: MailService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {
@@ -56,7 +62,16 @@ export class AuthService {
     });
 
     await this.userRepository.save(user);
-    const tokens = await this.generateTokens(user);
+
+    try {
+      await this.mailService.sendVerificationEmail(
+        normalizedEmail,
+        dto.name,
+        verificationToken,
+      );
+    } catch (error) {
+      this.logger.error(`Failed to send verification email: ${error.message}`);
+    }
 
     return {
       user: {
@@ -65,8 +80,7 @@ export class AuthService {
         email: user.email,
         role: user.role,
       },
-      ...tokens,
-      verificationToken,
+      message: 'Verification email sent. Please verify your email to login.',
     };
   }
 
@@ -77,6 +91,11 @@ export class AuthService {
     }
     if (!user.isActive) {
       throw new UnauthorizedException('Account is inactive');
+    }
+    if (user.role !== UserRole.ADMIN && !user.isEmailVerified) {
+      throw new ForbiddenException(
+        'Please verify your email before logging in',
+      );
     }
 
     const tokens = await this.generateTokens(user);
@@ -172,6 +191,36 @@ export class AuthService {
     await this.userRepository.save(user);
 
     return { message: 'Email verified successfully' };
+  }
+
+  async resendVerificationEmail(email: string) {
+    const normalizedEmail = email.toLowerCase();
+    const user = await this.userRepository.findOne({
+      where: { email: normalizedEmail },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.isEmailVerified) {
+      throw new BadRequestException('Email is already verified');
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    user.emailVerificationToken = verificationToken;
+    await this.userRepository.save(user);
+
+    try {
+      await this.mailService.sendVerificationEmail(
+        normalizedEmail,
+        user.name,
+        verificationToken,
+      );
+    } catch (error) {
+      this.logger.error(`Failed to send verification email: ${error.message}`);
+      throw new BadRequestException('Failed to send verification email');
+    }
+
+    return { message: 'Verification email sent' };
   }
 
   async getProfile(userId: string) {

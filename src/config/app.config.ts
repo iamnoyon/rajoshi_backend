@@ -42,6 +42,14 @@ export default () => ({
     merchantId: process.env.NAGAD_MERCHANT_ID || 'your-merchant-id',
     merchantKey: process.env.NAGAD_MERCHANT_KEY || 'your-merchant-key',
   },
+  mail: {
+    host: process.env.MAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.MAIL_PORT || '587', 10),
+    user: process.env.MAIL_USER || '',
+    pass: process.env.MAIL_PASS || '',
+    fromName: process.env.MAIL_FROM_NAME || 'Your Store',
+    fromEmail: process.env.MAIL_FROM_EMAIL || 'no-reply@example.com',
+  },
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
   admin: {
     email: process.env.ADMIN_EMAIL || 'admin@example.com',

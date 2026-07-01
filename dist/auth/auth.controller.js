@@ -22,6 +22,7 @@ const forgot_password_dto_1 = require("./dto/forgot-password.dto");
 const reset_password_dto_1 = require("./dto/reset-password.dto");
 const verify_email_dto_1 = require("./dto/verify-email.dto");
 const update_profile_dto_1 = require("./dto/update-profile.dto");
+const resend_verification_dto_1 = require("./dto/resend-verification.dto");
 const public_decorator_1 = require("../common/decorators/public.decorator");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const jwt_refresh_guard_1 = require("../common/guards/jwt-refresh.guard");
@@ -32,19 +33,8 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async register(dto, res) {
-        const result = await this.authService.register(dto);
-        res.cookie('access_token', result.accessToken, {
-            httpOnly: true,
-            maxAge: ACCESS_TOKEN_MAX_AGE,
-            sameSite: 'lax',
-        });
-        res.cookie('refresh_token', result.refreshToken, {
-            httpOnly: true,
-            maxAge: REFRESH_TOKEN_MAX_AGE,
-            sameSite: 'lax',
-        });
-        return { user: result.user };
+    async register(dto) {
+        return this.authService.register(dto);
     }
     async login(dto, res) {
         const result = await this.authService.login(dto);
@@ -90,6 +80,9 @@ let AuthController = class AuthController {
     verifyEmail(dto) {
         return this.authService.verifyEmail(dto.token);
     }
+    resendVerification(dto) {
+        return this.authService.resendVerificationEmail(dto.email);
+    }
     getProfile(userId) {
         return this.authService.getProfile(userId);
     }
@@ -103,9 +96,8 @@ __decorate([
     (0, common_1.Post)('register'),
     (0, swagger_1.ApiOperation)({ summary: 'Register a new user' }),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [register_dto_1.RegisterDto, Object]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([
@@ -166,6 +158,15 @@ __decorate([
     __metadata("design:paramtypes", [verify_email_dto_1.VerifyEmailDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "verifyEmail", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)('resend-verification'),
+    (0, swagger_1.ApiOperation)({ summary: 'Resend verification email' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [resend_verification_dto_1.ResendVerificationDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "resendVerification", null);
 __decorate([
     (0, common_1.Get)('profile'),
     (0, swagger_1.ApiBearerAuth)(),

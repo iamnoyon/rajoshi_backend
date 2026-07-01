@@ -44,6 +44,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var AuthService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
@@ -53,15 +54,19 @@ const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const bcrypt = __importStar(require("bcrypt"));
 const user_entity_1 = require("../entities/user.entity");
+const mail_service_1 = require("../mail/mail.service");
 const crypto = __importStar(require("crypto"));
-let AuthService = class AuthService {
+let AuthService = AuthService_1 = class AuthService {
     userRepository;
     jwtService;
     configService;
-    constructor(userRepository, jwtService, configService) {
+    mailService;
+    logger = new common_1.Logger(AuthService_1.name);
+    constructor(userRepository, jwtService, configService, mailService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.configService = configService;
+        this.mailService = mailService;
     }
     async validateUser(email, password) {
         const user = await this.userRepository.findOne({
@@ -90,7 +95,12 @@ let AuthService = class AuthService {
             emailVerificationToken: verificationToken,
         });
         await this.userRepository.save(user);
-        const tokens = await this.generateTokens(user);
+        try {
+            await this.mailService.sendVerificationEmail(normalizedEmail, dto.name, verificationToken);
+        }
+        catch (error) {
+            this.logger.error(`Failed to send verification email: ${error.message}`);
+        }
         return {
             user: {
                 id: user.id,
@@ -98,8 +108,7 @@ let AuthService = class AuthService {
                 email: user.email,
                 role: user.role,
             },
-            ...tokens,
-            verificationToken,
+            message: 'Verification email sent. Please verify your email to login.',
         };
     }
     async login(dto) {
@@ -109,6 +118,9 @@ let AuthService = class AuthService {
         }
         if (!user.isActive) {
             throw new common_1.UnauthorizedException('Account is inactive');
+        }
+        if (user.role !== user_entity_1.UserRole.ADMIN && !user.isEmailVerified) {
+            throw new common_1.ForbiddenException('Please verify your email before logging in');
         }
         const tokens = await this.generateTokens(user);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
@@ -187,6 +199,29 @@ let AuthService = class AuthService {
         await this.userRepository.save(user);
         return { message: 'Email verified successfully' };
     }
+    async resendVerificationEmail(email) {
+        const normalizedEmail = email.toLowerCase();
+        const user = await this.userRepository.findOne({
+            where: { email: normalizedEmail },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        if (user.isEmailVerified) {
+            throw new common_1.BadRequestException('Email is already verified');
+        }
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        user.emailVerificationToken = verificationToken;
+        await this.userRepository.save(user);
+        try {
+            await this.mailService.sendVerificationEmail(normalizedEmail, user.name, verificationToken);
+        }
+        catch (error) {
+            this.logger.error(`Failed to send verification email: ${error.message}`);
+            throw new common_1.BadRequestException('Failed to send verification email');
+        }
+        return { message: 'Verification email sent' };
+    }
     async getProfile(userId) {
         const user = await this.userRepository.findOne({
             where: { id: userId },
@@ -227,11 +262,12 @@ let AuthService = class AuthService {
     }
 };
 exports.AuthService = AuthService;
-exports.AuthService = AuthService = __decorate([
+exports.AuthService = AuthService = AuthService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        mail_service_1.MailService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

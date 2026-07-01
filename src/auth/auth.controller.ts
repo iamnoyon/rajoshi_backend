@@ -17,6 +17,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtRefreshGuard } from '../common/guards/jwt-refresh.guard';
@@ -32,22 +33,8 @@ export class AuthController {
   @Public()
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
-  async register(
-    @Body() dto: RegisterDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const result = await this.authService.register(dto);
-    res.cookie('access_token', result.accessToken, {
-      httpOnly: true,
-      maxAge: ACCESS_TOKEN_MAX_AGE,
-      sameSite: 'lax',
-    });
-    res.cookie('refresh_token', result.refreshToken, {
-      httpOnly: true,
-      maxAge: REFRESH_TOKEN_MAX_AGE,
-      sameSite: 'lax',
-    });
-    return { user: result.user };
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
   }
 
   @Public()
@@ -126,6 +113,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Verify email with token' })
   verifyEmail(@Body() dto: VerifyEmailDto) {
     return this.authService.verifyEmail(dto.token);
+  }
+
+  @Public()
+  @Post('resend-verification')
+  @ApiOperation({ summary: 'Resend verification email' })
+  resendVerification(@Body() dto: ResendVerificationDto) {
+    return this.authService.resendVerificationEmail(dto.email);
   }
 
   @Get('profile')

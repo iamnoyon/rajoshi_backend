@@ -5,22 +5,23 @@ import { User, UserRole } from '../entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { MailService } from '../mail/mail.service';
 export declare class AuthService {
     private userRepository;
     private jwtService;
     private configService;
-    constructor(userRepository: Repository<User>, jwtService: JwtService, configService: ConfigService);
+    private mailService;
+    private readonly logger;
+    constructor(userRepository: Repository<User>, jwtService: JwtService, configService: ConfigService, mailService: MailService);
     validateUser(email: string, password: string): Promise<User | null>;
     register(dto: RegisterDto): Promise<{
-        verificationToken: string;
-        accessToken: string;
-        refreshToken: string;
         user: {
             id: string;
             name: string;
             email: string;
             role: UserRole;
         };
+        message: string;
     }>;
     login(dto: LoginDto): Promise<{
         accessToken: string;
@@ -46,6 +47,9 @@ export declare class AuthService {
         message: string;
     }>;
     verifyEmail(token: string): Promise<{
+        message: string;
+    }>;
+    resendVerificationEmail(email: string): Promise<{
         message: string;
     }>;
     getProfile(userId: string): Promise<{

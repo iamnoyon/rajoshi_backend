@@ -6,16 +6,18 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
-    register(dto: RegisterDto, res: Response): Promise<{
+    register(dto: RegisterDto): Promise<{
         user: {
             id: string;
             name: string;
             email: string;
             role: import("../entities/user.entity").UserRole;
         };
+        message: string;
     }>;
     login(dto: LoginDto, res: Response): Promise<{
         user: {
@@ -38,6 +40,9 @@ export declare class AuthController {
         message: string;
     }>;
     verifyEmail(dto: VerifyEmailDto): Promise<{
+        message: string;
+    }>;
+    resendVerification(dto: ResendVerificationDto): Promise<{
         message: string;
     }>;
     getProfile(userId: string): Promise<{
