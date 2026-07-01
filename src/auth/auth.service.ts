@@ -26,7 +26,9 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { email: email.toLowerCase() } });
+    const user = await this.userRepository.findOne({
+      where: { email: email.toLowerCase() },
+    });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
@@ -35,7 +37,9 @@ export class AuthService {
 
   async register(dto: RegisterDto) {
     const normalizedEmail = dto.email.toLowerCase();
-    const existing = await this.userRepository.findOne({ where: { email: normalizedEmail } });
+    const existing = await this.userRepository.findOne({
+      where: { email: normalizedEmail },
+    });
     if (existing) {
       throw new ConflictException('Email already registered');
     }
@@ -55,7 +59,12 @@ export class AuthService {
     const tokens = await this.generateTokens(user);
 
     return {
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       ...tokens,
       verificationToken,
     };
@@ -74,7 +83,12 @@ export class AuthService {
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       ...tokens,
     };
   }
@@ -84,7 +98,9 @@ export class AuthService {
       const payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('jwt.refreshSecret'),
       });
-      const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+      const user = await this.userRepository.findOne({
+        where: { id: payload.sub },
+      });
       if (!user || !user.refreshToken || user.refreshToken !== refreshToken) {
         throw new UnauthorizedException('Invalid refresh token');
       }
@@ -99,12 +115,14 @@ export class AuthService {
   }
 
   async logout(userId: string) {
-    await this.userRepository.update(userId, { refreshToken: '' as any });
+    await this.userRepository.update(userId, { refreshToken: '' });
     return { message: 'Logged out successfully' };
   }
 
   async forgotPassword(email: string) {
-    const user = await this.userRepository.findOne({ where: { email: email.toLowerCase() } });
+    const user = await this.userRepository.findOne({
+      where: { email: email.toLowerCase() },
+    });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -124,7 +142,11 @@ export class AuthService {
       where: { passwordResetToken: token },
     });
 
-    if (!user || !user.passwordResetExpires || user.passwordResetExpires < new Date()) {
+    if (
+      !user ||
+      !user.passwordResetExpires ||
+      user.passwordResetExpires < new Date()
+    ) {
       throw new BadRequestException('Invalid or expired reset token');
     }
 
@@ -160,7 +182,14 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const { password, refreshToken, emailVerificationToken, passwordResetToken, passwordResetExpires, ...result } = user;
+    const {
+      password,
+      refreshToken,
+      emailVerificationToken,
+      passwordResetToken,
+      passwordResetExpires,
+      ...result
+    } = user;
     return result;
   }
 
@@ -176,7 +205,14 @@ export class AuthService {
 
     await this.userRepository.save(user);
 
-    const { password, refreshToken, emailVerificationToken, passwordResetToken, passwordResetExpires, ...result } = user;
+    const {
+      password,
+      refreshToken,
+      emailVerificationToken,
+      passwordResetToken,
+      passwordResetExpires,
+      ...result
+    } = user;
     return result;
   }
 

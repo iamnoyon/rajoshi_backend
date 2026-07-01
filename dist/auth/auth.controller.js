@@ -25,7 +25,7 @@ const update_profile_dto_1 = require("./dto/update-profile.dto");
 const public_decorator_1 = require("../common/decorators/public.decorator");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const jwt_refresh_guard_1 = require("../common/guards/jwt-refresh.guard");
-const ACCESS_TOKEN_MAX_AGE = 15 * 60 * 1000;
+const ACCESS_TOKEN_MAX_AGE = 60 * 60 * 1000;
 const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 let AuthController = class AuthController {
     authService;

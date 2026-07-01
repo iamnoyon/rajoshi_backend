@@ -21,7 +21,7 @@ import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtRefreshGuard } from '../common/guards/jwt-refresh.guard';
 
-const ACCESS_TOKEN_MAX_AGE = 15 * 60 * 1000;       // 15 min
+const ACCESS_TOKEN_MAX_AGE = 60 * 60 * 1000; // 15 min
 const REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 @ApiTags('Auth')
@@ -32,7 +32,10 @@ export class AuthController {
   @Public()
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
-  async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
+  async register(
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.authService.register(dto);
     res.cookie('access_token', result.accessToken, {
       httpOnly: true,
@@ -50,7 +53,10 @@ export class AuthController {
   @Public()
   @Post('login')
   @ApiOperation({ summary: 'Login with email and password' })
-  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const result = await this.authService.login(dto);
     res.cookie('access_token', result.accessToken, {
       httpOnly: true,
@@ -69,7 +75,10 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   @ApiOperation({ summary: 'Refresh access token' })
-  async refresh(@Request() req: any, @Res({ passthrough: true }) res: Response) {
+  async refresh(
+    @Request() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const refreshToken = req.cookies?.refresh_token;
     const result = await this.authService.refresh(refreshToken);
     res.cookie('access_token', result.accessToken, {
@@ -88,7 +97,10 @@ export class AuthController {
   @Post('logout')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout user' })
-  async logout(@CurrentUser('id') userId: string, @Res({ passthrough: true }) res: Response) {
+  async logout(
+    @CurrentUser('id') userId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     await this.authService.logout(userId);
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
@@ -126,7 +138,10 @@ export class AuthController {
   @Patch('profile')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update current user profile' })
-  updateProfile(@CurrentUser('id') userId: string, @Body() dto: UpdateProfileDto) {
+  updateProfile(
+    @CurrentUser('id') userId: string,
+    @Body() dto: UpdateProfileDto,
+  ) {
     return this.authService.updateProfile(userId, dto);
   }
 }

@@ -64,7 +64,9 @@ let AuthService = class AuthService {
         this.configService = configService;
     }
     async validateUser(email, password) {
-        const user = await this.userRepository.findOne({ where: { email: email.toLowerCase() } });
+        const user = await this.userRepository.findOne({
+            where: { email: email.toLowerCase() },
+        });
         if (user && (await bcrypt.compare(password, user.password))) {
             return user;
         }
@@ -72,7 +74,9 @@ let AuthService = class AuthService {
     }
     async register(dto) {
         const normalizedEmail = dto.email.toLowerCase();
-        const existing = await this.userRepository.findOne({ where: { email: normalizedEmail } });
+        const existing = await this.userRepository.findOne({
+            where: { email: normalizedEmail },
+        });
         if (existing) {
             throw new common_1.ConflictException('Email already registered');
         }
@@ -88,7 +92,12 @@ let AuthService = class AuthService {
         await this.userRepository.save(user);
         const tokens = await this.generateTokens(user);
         return {
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
             ...tokens,
             verificationToken,
         };
@@ -104,7 +113,12 @@ let AuthService = class AuthService {
         const tokens = await this.generateTokens(user);
         await this.updateRefreshToken(user.id, tokens.refreshToken);
         return {
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
             ...tokens,
         };
     }
@@ -113,7 +127,9 @@ let AuthService = class AuthService {
             const payload = this.jwtService.verify(refreshToken, {
                 secret: this.configService.get('jwt.refreshSecret'),
             });
-            const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+            const user = await this.userRepository.findOne({
+                where: { id: payload.sub },
+            });
             if (!user || !user.refreshToken || user.refreshToken !== refreshToken) {
                 throw new common_1.UnauthorizedException('Invalid refresh token');
             }
@@ -130,7 +146,9 @@ let AuthService = class AuthService {
         return { message: 'Logged out successfully' };
     }
     async forgotPassword(email) {
-        const user = await this.userRepository.findOne({ where: { email: email.toLowerCase() } });
+        const user = await this.userRepository.findOne({
+            where: { email: email.toLowerCase() },
+        });
         if (!user) {
             throw new common_1.NotFoundException('User not found');
         }
@@ -145,7 +163,9 @@ let AuthService = class AuthService {
         const user = await this.userRepository.findOne({
             where: { passwordResetToken: token },
         });
-        if (!user || !user.passwordResetExpires || user.passwordResetExpires < new Date()) {
+        if (!user ||
+            !user.passwordResetExpires ||
+            user.passwordResetExpires < new Date()) {
             throw new common_1.BadRequestException('Invalid or expired reset token');
         }
         user.password = await bcrypt.hash(password, 10);
