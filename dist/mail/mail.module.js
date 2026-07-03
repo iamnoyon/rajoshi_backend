@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailModule = void 0;
 const common_1 = require("@nestjs/common");
 const mailer_1 = require("@nestjs-modules/mailer");
-const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
+const handlebars_adapter_1 = require("@nestjs-modules/mailer/adapters/handlebars.adapter");
 const config_1 = require("@nestjs/config");
 const path_1 = require("path");
 const mail_service_1 = require("./mail.service");
