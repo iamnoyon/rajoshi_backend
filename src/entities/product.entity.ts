@@ -48,6 +48,9 @@ export class Product {
   @Column('simple-array', { nullable: true })
   images: string[];
 
+  @Column({ type: 'text', nullable: true })
+  tags: string;
+
   @Column({ default: true })
   isActive: boolean;
 

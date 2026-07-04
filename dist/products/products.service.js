@@ -65,11 +65,16 @@ let ProductsService = class ProductsService {
         };
     }
     async findFeatured() {
-        return this.productRepository.find({
-            where: { isFeatured: true, isActive: true },
-            relations: ['productImages', 'category'],
-            take: 8,
-        });
+        const products = await this.productRepository
+            .createQueryBuilder('product')
+            .leftJoinAndSelect('product.productImages', 'productImages')
+            .leftJoin('product.category', 'category')
+            .addSelect(['category.id', 'category.name', 'category.slug'])
+            .where('product.isFeatured = :isFeatured', { isFeatured: true })
+            .andWhere('product.isActive = :isActive', { isActive: true })
+            .take(8)
+            .getMany();
+        return products;
     }
     async findOne(id) {
         const product = await this.productRepository.findOne({

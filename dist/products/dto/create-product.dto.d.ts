@@ -9,6 +9,7 @@ export declare class CreateProductDto {
     shortnote?: string;
     features?: string[];
     images?: string[];
+    tags?: string;
     isActive?: boolean;
     isFeatured?: boolean;
     categoryId: string;

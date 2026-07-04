@@ -68,6 +68,11 @@ export class CreateProductDto {
   @IsString({ each: true })
   images?: string[];
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  tags?: string;
+
   @ApiPropertyOptional({ default: true })
   @IsOptional()
   @IsBoolean()

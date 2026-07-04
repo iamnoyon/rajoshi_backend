@@ -65,6 +65,10 @@ async function bootstrap() {
     }));
     app.useStaticAssets(path.join(process.cwd(), 'uploads'), {
         prefix: '/uploads',
+        setHeaders: (res) => {
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET');
+        },
     });
     app.setGlobalPrefix('api');
     const config = new swagger_1.DocumentBuilder()

@@ -14,6 +14,7 @@ export declare class Product {
     shortnote: string;
     features: string[];
     images: string[];
+    tags: string;
     isActive: boolean;
     isFeatured: boolean;
     categoryId: string;

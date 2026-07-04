@@ -74,6 +74,11 @@ export class UpdateProductDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  tags?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 
