@@ -20,6 +20,7 @@ const products_service_1 = require("./products.service");
 const create_product_dto_1 = require("./dto/create-product.dto");
 const update_product_dto_1 = require("./dto/update-product.dto");
 const product_query_dto_1 = require("./dto/product-query.dto");
+const product_batch_dto_1 = require("./dto/product-batch.dto");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const public_decorator_1 = require("../common/decorators/public.decorator");
 const user_entity_1 = require("../entities/user.entity");
@@ -30,6 +31,12 @@ let ProductsController = class ProductsController {
     }
     findAll(query) {
         return this.productsService.findAll(query);
+    }
+    findByCategory(categoryId, categoryName, page, limit) {
+        return this.productsService.findByCategory(categoryId, categoryName, page || 1, limit || 10);
+    }
+    findByIds(dto) {
+        return this.productsService.findByIds(dto.ids);
     }
     findOne(id) {
         return this.productsService.findOne(id);
@@ -69,6 +76,31 @@ __decorate([
     __metadata("design:paramtypes", [product_query_dto_1.ProductQueryDto]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Get)('category'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get products by category ID or name' }),
+    (0, swagger_1.ApiQuery)({ name: 'categoryId', required: false, type: String }),
+    (0, swagger_1.ApiQuery)({ name: 'categoryName', required: false, type: String }),
+    (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number, example: 1 }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number, example: 10 }),
+    __param(0, (0, common_1.Query)('categoryId')),
+    __param(1, (0, common_1.Query)('categoryName')),
+    __param(2, (0, common_1.Query)('page')),
+    __param(3, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Number, Number]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "findByCategory", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)('batch'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get products by array of IDs' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [product_batch_dto_1.ProductBatchDto]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "findByIds", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':id'),

@@ -2,6 +2,7 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductQueryDto } from './dto/product-query.dto';
+import { ProductBatchDto } from './dto/product-batch.dto';
 export declare class ProductsController {
     private productsService;
     constructor(productsService: ProductsService);
@@ -12,6 +13,14 @@ export declare class ProductsController {
         limit: number;
         totalPages: number;
     }>;
+    findByCategory(categoryId?: string, categoryName?: string, page?: number, limit?: number): Promise<{
+        content: import("../entities/product.entity").Product[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    findByIds(dto: ProductBatchDto): Promise<import("../entities/product.entity").Product[]>;
     findOne(id: string): Promise<import("../entities/product.entity").Product>;
     findBySlug(slug: string): Promise<import("../entities/product.entity").Product>;
     create(dto: CreateProductDto): Promise<import("../entities/product.entity").Product>;

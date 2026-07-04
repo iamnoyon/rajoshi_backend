@@ -87,7 +87,10 @@ let ProductsService = class ProductsService {
                 maxPrice: maxPrice || 9999999,
             });
         }
-        if (tag) {
+        if (tag === product_query_dto_1.ProductTag.FEATURED) {
+            qb.andWhere('product.isFeatured = :isFeatured', { isFeatured: true });
+        }
+        else if (tag) {
             qb.andWhere('product.tags ILIKE :tag', { tag: `%${tag}%` });
         }
         if (!sort) {
@@ -108,6 +111,45 @@ let ProductsService = class ProductsService {
             limit,
             totalPages: Math.ceil(total / limit),
         };
+    }
+    async findByCategory(categoryId, categoryName, page = 1, limit = 10) {
+        const skip = (page - 1) * limit;
+        const qb = this.productRepository
+            .createQueryBuilder('product')
+            .leftJoinAndSelect('product.productImages', 'productImages')
+            .leftJoin('product.category', 'category')
+            .addSelect(['category.id', 'category.name', 'category.slug'])
+            .where('product.isActive = :isActive', { isActive: true });
+        if (categoryId) {
+            qb.andWhere('product.categoryId = :categoryId', { categoryId });
+        }
+        else if (categoryName) {
+            qb.andWhere('category.name ILIKE :categoryName', { categoryName: `%${categoryName}%` });
+        }
+        qb.orderBy('product.createdAt', 'DESC')
+            .skip(skip)
+            .take(limit);
+        const [products, total] = await qb.getManyAndCount();
+        return {
+            content: products,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
+    }
+    async findByIds(ids) {
+        if (!ids || ids.length === 0) {
+            return [];
+        }
+        return this.productRepository
+            .createQueryBuilder('product')
+            .leftJoinAndSelect('product.productImages', 'productImages')
+            .leftJoin('product.category', 'category')
+            .addSelect(['category.id', 'category.name', 'category.slug'])
+            .where('product.id IN (:...ids)', { ids })
+            .andWhere('product.isActive = :isActive', { isActive: true })
+            .getMany();
     }
     async findOne(id) {
         const product = await this.productRepository.findOne({

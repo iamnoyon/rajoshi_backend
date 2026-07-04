@@ -10,12 +10,13 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductQueryDto } from './dto/product-query.dto';
+import { ProductBatchDto } from './dto/product-batch.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Public } from '../common/decorators/public.decorator';
 import { UserRole } from '../entities/user.entity';
@@ -30,6 +31,29 @@ export class ProductsController {
   @ApiOperation({ summary: 'Get all published products' })
   findAll(@Query() query: ProductQueryDto) {
     return this.productsService.findAll(query);
+  }
+
+  @Public()
+  @Get('category')
+  @ApiOperation({ summary: 'Get products by category ID or name' })
+  @ApiQuery({ name: 'categoryId', required: false, type: String })
+  @ApiQuery({ name: 'categoryName', required: false, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  findByCategory(
+    @Query('categoryId') categoryId?: string,
+    @Query('categoryName') categoryName?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.productsService.findByCategory(categoryId, categoryName, page || 1, limit || 10);
+  }
+
+  @Public()
+  @Post('batch')
+  @ApiOperation({ summary: 'Get products by array of IDs' })
+  findByIds(@Body() dto: ProductBatchDto) {
+    return this.productsService.findByIds(dto.ids);
   }
 
   @Public()

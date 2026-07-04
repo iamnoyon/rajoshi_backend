@@ -15,6 +15,14 @@ export declare class ProductsService {
         limit: number;
         totalPages: number;
     }>;
+    findByCategory(categoryId?: string, categoryName?: string, page?: number, limit?: number): Promise<{
+        content: Product[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    findByIds(ids: string[]): Promise<Product[]>;
     findOne(id: string): Promise<Product>;
     findBySlug(slug: string): Promise<Product>;
     create(dto: CreateProductDto): Promise<Product>;
