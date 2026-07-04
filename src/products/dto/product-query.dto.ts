@@ -1,6 +1,14 @@
-import { IsOptional, IsString, IsBoolean, IsNumber, Min, Max } from 'class-validator';
+import { IsOptional, IsString, IsBoolean, IsNumber, IsEnum, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+
+export enum ProductTag {
+  BEST_SELLER = 'Best_Seller',
+  FEATURED = 'Featured',
+  NEW = 'New',
+  SALE = 'Sale',
+  TRENDING = 'Trending',
+}
 
 export class ProductQueryDto {
   @ApiPropertyOptional()
@@ -36,6 +44,11 @@ export class ProductQueryDto {
   @IsOptional()
   @IsString()
   sort?: string;
+
+  @ApiPropertyOptional({ enum: ProductTag })
+  @IsOptional()
+  @IsEnum(ProductTag)
+  tag?: ProductTag;
 
   @ApiPropertyOptional({ default: 1 })
   @IsOptional()

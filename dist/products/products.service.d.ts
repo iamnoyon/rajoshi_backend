@@ -9,13 +9,12 @@ export declare class ProductsService {
     private productImageRepository;
     constructor(productRepository: Repository<Product>, productImageRepository: Repository<ProductImage>);
     findAll(query: ProductQueryDto): Promise<{
-        content: Product[];
+        content: (Product | undefined)[];
         total: number;
         page: number;
         limit: number;
         totalPages: number;
     }>;
-    findFeatured(): Promise<Product[]>;
     findOne(id: string): Promise<Product>;
     findBySlug(slug: string): Promise<Product>;
     create(dto: CreateProductDto): Promise<Product>;

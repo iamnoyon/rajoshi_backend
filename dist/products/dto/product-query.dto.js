@@ -9,10 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductQueryDto = void 0;
+exports.ProductQueryDto = exports.ProductTag = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const swagger_1 = require("@nestjs/swagger");
+var ProductTag;
+(function (ProductTag) {
+    ProductTag["BEST_SELLER"] = "Best_Seller";
+    ProductTag["FEATURED"] = "Featured";
+    ProductTag["NEW"] = "New";
+    ProductTag["SALE"] = "Sale";
+    ProductTag["TRENDING"] = "Trending";
+})(ProductTag || (exports.ProductTag = ProductTag = {}));
 class ProductQueryDto {
     search;
     categoryId;
@@ -20,6 +28,7 @@ class ProductQueryDto {
     maxPrice;
     isFeatured;
     sort;
+    tag;
     page = 1;
     limit = 10;
 }
@@ -64,6 +73,12 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProductQueryDto.prototype, "sort", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ enum: ProductTag }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(ProductTag),
+    __metadata("design:type", String)
+], ProductQueryDto.prototype, "tag", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ default: 1 }),
     (0, class_validator_1.IsOptional)(),

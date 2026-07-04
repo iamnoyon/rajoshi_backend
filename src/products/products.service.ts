@@ -10,7 +10,7 @@ import { Product } from '../entities/product.entity';
 import { ProductImage } from '../entities/product-image.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductQueryDto } from './dto/product-query.dto';
+import { ProductQueryDto, ProductTag } from './dto/product-query.dto';
 
 @Injectable()
 export class ProductsService {
@@ -22,40 +22,96 @@ export class ProductsService {
   ) {}
 
   async findAll(query: ProductQueryDto) {
-    const { search, categoryId, minPrice, maxPrice, isFeatured, sort, page = 1, limit = 10 } = query;
+    const { search, categoryId, minPrice, maxPrice, isFeatured, sort, tag, page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
 
-    const where: FindOptionsWhere<Product> = {};
-    where.isActive = true;
+    if (tag === ProductTag.BEST_SELLER) {
+      const sumExpr = 'COALESCE(SUM(orderItems.quantity), 0)';
+
+      const idsResult = await this.productRepository
+        .createQueryBuilder('product')
+        .leftJoin('product.orderItems', 'orderItems')
+        .addSelect(sumExpr, 'totalSold')
+        .where('product.isActive = :isActive', { isActive: true })
+        .groupBy('product.id')
+        .having('SUM(orderItems.quantity) > 0')
+        .orderBy(sumExpr, 'DESC')
+        .skip(skip)
+        .take(limit)
+        .getRawMany();
+
+      const total = await this.productRepository
+        .createQueryBuilder('product')
+        .leftJoin('product.orderItems', 'orderItems')
+        .where('product.isActive = :isActive', { isActive: true })
+        .groupBy('product.id')
+        .having('SUM(orderItems.quantity) > 0')
+        .getCount();
+
+      const ids = idsResult.map((r) => r.product_id);
+
+      if (ids.length === 0) {
+        return { content: [], total: 0, page, limit, totalPages: 0 };
+      }
+
+      const products = await this.productRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.productImages', 'productImages')
+        .leftJoin('product.category', 'category')
+        .addSelect(['category.id', 'category.name', 'category.slug'])
+        .where('product.id IN (:...ids)', { ids })
+        .getMany();
+
+      const ordered = ids.map((id) => products.find((p) => p.id === id));
+
+      return {
+        content: ordered,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      };
+    }
+
+    const qb = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.productImages', 'productImages')
+      .leftJoin('product.category', 'category')
+      .addSelect(['category.id', 'category.name', 'category.slug']);
+
+    qb.where('product.isActive = :isActive', { isActive: true });
 
     if (search) {
-      where.name = Like(`%${search}%`);
+      qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
     }
     if (categoryId) {
-      where.categoryId = categoryId;
+      qb.andWhere('product.categoryId = :categoryId', { categoryId });
     }
     if (minPrice !== undefined || maxPrice !== undefined) {
-      where.price = Between(minPrice || 0, maxPrice || 9999999);
-    }
-    if (isFeatured !== undefined) {
-      where.isFeatured = isFeatured;
+      qb.andWhere('product.price BETWEEN :minPrice AND :maxPrice', {
+        minPrice: minPrice || 0,
+        maxPrice: maxPrice || 9999999,
+      });
     }
 
-    let order: any = { createdAt: 'DESC' };
+    if (tag) {
+      qb.andWhere('product.tags ILIKE :tag', { tag: `%${tag}%` });
+    }
+
+    if (!sort) {
+      qb.orderBy('product.createdAt', 'DESC');
+    }
+
     if (sort) {
       const [field, dir] = sort.split(':');
       if (field && dir) {
-        order = { [field]: dir.toUpperCase() === 'ASC' ? 'ASC' : 'DESC' };
+        qb.orderBy(`product.${field}`, dir.toUpperCase() === 'ASC' ? 'ASC' : 'DESC');
       }
     }
 
-    const [products, total] = await this.productRepository.findAndCount({
-      where,
-      relations: ['productImages', 'category', 'reviews'],
-      order,
-      skip,
-      take: limit,
-    });
+    qb.skip(skip).take(limit);
+
+    const [products, total] = await qb.getManyAndCount();
 
     return {
       content: products,
@@ -64,20 +120,6 @@ export class ProductsService {
       limit,
       totalPages: Math.ceil(total / limit),
     };
-  }
-
-  async findFeatured() {
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.productImages', 'productImages')
-      .leftJoin('product.category', 'category')
-      .addSelect(['category.id', 'category.name', 'category.slug'])
-      .where('product.isFeatured = :isFeatured', { isFeatured: true })
-      .andWhere('product.isActive = :isActive', { isActive: true })
-      .take(8)
-      .getMany();
-
-    return products;
   }
 
   async findOne(id: string) {

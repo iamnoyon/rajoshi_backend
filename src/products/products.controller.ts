@@ -33,13 +33,6 @@ export class ProductsController {
   }
 
   @Public()
-  @Get('featured')
-  @ApiOperation({ summary: 'Get featured products' })
-  findFeatured() {
-    return this.productsService.findFeatured();
-  }
-
-  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get product by ID' })
   findOne(@Param('id') id: string) {

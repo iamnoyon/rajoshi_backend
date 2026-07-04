@@ -6,13 +6,12 @@ export declare class ProductsController {
     private productsService;
     constructor(productsService: ProductsService);
     findAll(query: ProductQueryDto): Promise<{
-        content: import("../entities/product.entity").Product[];
+        content: (import("../entities/product.entity").Product | undefined)[];
         total: number;
         page: number;
         limit: number;
         totalPages: number;
     }>;
-    findFeatured(): Promise<import("../entities/product.entity").Product[]>;
     findOne(id: string): Promise<import("../entities/product.entity").Product>;
     findBySlug(slug: string): Promise<import("../entities/product.entity").Product>;
     create(dto: CreateProductDto): Promise<import("../entities/product.entity").Product>;

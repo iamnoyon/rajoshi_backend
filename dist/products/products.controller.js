@@ -31,9 +31,6 @@ let ProductsController = class ProductsController {
     findAll(query) {
         return this.productsService.findAll(query);
     }
-    findFeatured() {
-        return this.productsService.findFeatured();
-    }
     findOne(id) {
         return this.productsService.findOne(id);
     }
@@ -72,14 +69,6 @@ __decorate([
     __metadata("design:paramtypes", [product_query_dto_1.ProductQueryDto]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
-__decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)('featured'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get featured products' }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], ProductsController.prototype, "findFeatured", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':id'),
