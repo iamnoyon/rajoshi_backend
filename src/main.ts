@@ -14,7 +14,8 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port') || 5000;
-  const frontendUrl = configService.get<string>('frontendUrl') || 'http://localhost:3000';
+  const frontendUrl =
+    configService.get<string>('frontendUrl') || 'http://localhost:3000';
 
   app.use(helmet.default());
   app.use(cookieParser());

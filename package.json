@@ -1,8 +1,8 @@
 {
-  "name": "backend",
+  "name": "Kalyani-Ecommerce-Backend",
   "version": "0.0.1",
   "description": "Ecommerce Backend - NestJS",
-  "author": "",
+  "author": "Kalyani Ecommerce",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
