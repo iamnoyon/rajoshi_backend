@@ -32,7 +32,6 @@ export class ProductsService {
         .createQueryBuilder('product')
         .leftJoin('product.orderItems', 'orderItems')
         .addSelect(sumExpr, 'totalSold')
-        .where('product.isActive = :isActive', { isActive: true })
         .groupBy('product.id')
         .having('SUM(orderItems.quantity) > 0')
         .orderBy(sumExpr, 'DESC')
@@ -43,7 +42,6 @@ export class ProductsService {
       const total = await this.productRepository
         .createQueryBuilder('product')
         .leftJoin('product.orderItems', 'orderItems')
-        .where('product.isActive = :isActive', { isActive: true })
         .groupBy('product.id')
         .having('SUM(orderItems.quantity) > 0')
         .getCount();
@@ -79,7 +77,7 @@ export class ProductsService {
       .leftJoin('product.category', 'category')
       .addSelect(['category.id', 'category.name', 'category.slug']);
 
-    qb.where('product.isActive = :isActive', { isActive: true });
+    qb.where('1=1');
 
     if (search) {
       qb.andWhere('product.name ILIKE :search', { search: `%${search}%` });
