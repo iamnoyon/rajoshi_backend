@@ -23,7 +23,16 @@ export class UsersService {
       order: { createdAt: 'DESC' },
     });
 
-    const sanitized = users.map(({ password, refreshToken, emailVerificationToken, passwordResetToken, passwordResetExpires, ...user }) => user);
+    const sanitized = users.map(
+      ({
+        password,
+        refreshToken,
+        emailVerificationToken,
+        passwordResetToken,
+        passwordResetExpires,
+        ...user
+      }) => user,
+    );
 
     return {
       content: sanitized,
@@ -42,7 +51,14 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const { password, refreshToken, emailVerificationToken, passwordResetToken, passwordResetExpires, ...result } = user;
+    const {
+      password,
+      refreshToken,
+      emailVerificationToken,
+      passwordResetToken,
+      passwordResetExpires,
+      ...result
+    } = user;
     return result;
   }
 
@@ -53,7 +69,9 @@ export class UsersService {
     }
 
     if (dto.email && dto.email !== user.email) {
-      const existing = await this.userRepository.findOne({ where: { email: dto.email } });
+      const existing = await this.userRepository.findOne({
+        where: { email: dto.email },
+      });
       if (existing) {
         throw new ConflictException('Email already in use');
       }
@@ -66,7 +84,14 @@ export class UsersService {
     Object.assign(user, dto);
     await this.userRepository.save(user);
 
-    const { password, refreshToken, emailVerificationToken, passwordResetToken, passwordResetExpires, ...result } = user;
+    const {
+      password,
+      refreshToken,
+      emailVerificationToken,
+      passwordResetToken,
+      passwordResetExpires,
+      ...result
+    } = user;
     return result;
   }
 
@@ -81,8 +106,12 @@ export class UsersService {
 
   async getStats() {
     const total = await this.userRepository.count();
-    const active = await this.userRepository.count({ where: { isActive: true } });
-    const admins = await this.userRepository.count({ where: { role: UserRole.ADMIN } });
+    const active = await this.userRepository.count({
+      where: { isActive: true },
+    });
+    const admins = await this.userRepository.count({
+      where: { role: UserRole.ADMIN },
+    });
     return { total, active, admins };
   }
 }

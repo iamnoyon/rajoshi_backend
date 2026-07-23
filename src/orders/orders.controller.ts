@@ -32,7 +32,10 @@ export class OrdersController {
   @Get('my-orders')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user orders' })
-  findMyOrders(@CurrentUser('id') userId: string, @Query() query: PaginationDto) {
+  findMyOrders(
+    @CurrentUser('id') userId: string,
+    @Query() query: PaginationDto,
+  ) {
     return this.ordersService.findMyOrders(userId, query.page, query.limit);
   }
 

@@ -33,7 +33,9 @@ let JwtRefreshStrategy = class JwtRefreshStrategy extends (0, passport_1.Passpor
     }
     async validate(req, payload) {
         const refreshToken = req.cookies?.refresh_token;
-        const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+        const user = await this.userRepository.findOne({
+            where: { id: payload.sub },
+        });
         if (!user || !user.refreshToken || user.refreshToken !== refreshToken) {
             throw new common_1.UnauthorizedException('Invalid refresh token');
         }

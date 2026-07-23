@@ -16,7 +16,9 @@ export class UploadService {
     }
   }
 
-  async uploadSingle(file: Express.Multer.File): Promise<{ url: string; publicId: string }> {
+  async uploadSingle(
+    file: Express.Multer.File,
+  ): Promise<{ url: string; publicId: string }> {
     if (!file) {
       throw new BadRequestException('No file provided');
     }
@@ -33,7 +35,9 @@ export class UploadService {
     };
   }
 
-  async uploadMultiple(files: Express.Multer.File[]): Promise<{ url: string; publicId: string }[]> {
+  async uploadMultiple(
+    files: Express.Multer.File[],
+  ): Promise<{ url: string; publicId: string }[]> {
     if (!files || files.length === 0) {
       throw new BadRequestException('No files provided');
     }

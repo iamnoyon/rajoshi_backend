@@ -16,14 +16,17 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   ) {
     super({
       jwtFromRequest: (req: Request) =>
-        req.cookies?.access_token || ExtractJwt.fromAuthHeaderAsBearerToken()(req),
+        req.cookies?.access_token ||
+        ExtractJwt.fromAuthHeaderAsBearerToken()(req),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('jwt.secret')!,
     });
   }
 
   async validate(payload: { sub: string; email: string; role: string }) {
-    const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+    const user = await this.userRepository.findOne({
+      where: { id: payload.sub },
+    });
     if (!user || !user.isActive) {
       throw new UnauthorizedException('User not found or inactive');
     }

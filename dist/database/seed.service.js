@@ -68,7 +68,9 @@ let SeedService = SeedService_1 = class SeedService {
         const adminEmail = this.configService.get('ADMIN_EMAIL') || 'admin@example.com';
         const adminPassword = this.configService.get('ADMIN_PASSWORD') || 'admin123';
         const adminName = this.configService.get('ADMIN_NAME') || 'Admin';
-        const existing = await this.userRepository.findOne({ where: { email: adminEmail.toLowerCase() } });
+        const existing = await this.userRepository.findOne({
+            where: { email: adminEmail.toLowerCase() },
+        });
         if (existing) {
             this.logger.log('Admin user already exists, skipping seed.');
             return;

@@ -29,7 +29,9 @@ let PaymentsService = class PaymentsService {
         this.configService = configService;
     }
     async createPayment(orderId, method) {
-        const order = await this.orderRepository.findOne({ where: { id: orderId } });
+        const order = await this.orderRepository.findOne({
+            where: { id: orderId },
+        });
         if (!order) {
             throw new common_1.NotFoundException('Order not found');
         }
@@ -107,7 +109,9 @@ let PaymentsService = class PaymentsService {
                 message: 'SSLCommerz not configured. In test mode.',
             };
         }
-        const order = await this.orderRepository.findOne({ where: { id: payment.orderId } });
+        const order = await this.orderRepository.findOne({
+            where: { id: payment.orderId },
+        });
         const postData = {
             store_id: storeId,
             store_passwd: storePassword,
@@ -141,7 +145,9 @@ let PaymentsService = class PaymentsService {
             return new Promise((resolve) => {
                 const req = https.request(options, (res) => {
                     let data = '';
-                    res.on('data', (chunk) => { data += chunk; });
+                    res.on('data', (chunk) => {
+                        data += chunk;
+                    });
                     res.on('end', () => {
                         try {
                             const response = JSON.parse(data);
@@ -191,7 +197,10 @@ let PaymentsService = class PaymentsService {
         try {
             const https = require('https');
             const tokenResponse = await new Promise((resolve) => {
-                const authData = JSON.stringify({ app_key: appKey, app_secret: appSecret });
+                const authData = JSON.stringify({
+                    app_key: appKey,
+                    app_secret: appSecret,
+                });
                 const options = {
                     hostname: 'tokenized.sandbox.bka.sh',
                     port: 443,
@@ -204,7 +213,9 @@ let PaymentsService = class PaymentsService {
                 };
                 const req = https.request(options, (res) => {
                     let data = '';
-                    res.on('data', (chunk) => { data += chunk; });
+                    res.on('data', (chunk) => {
+                        data += chunk;
+                    });
                     res.on('end', () => {
                         try {
                             resolve(JSON.parse(data));
@@ -246,7 +257,9 @@ let PaymentsService = class PaymentsService {
         }
         const timestamp = new Date().getTime().toString();
         const suffix = timestamp;
-        const order = await this.orderRepository.findOne({ where: { id: payment.orderId } });
+        const order = await this.orderRepository.findOne({
+            where: { id: payment.orderId },
+        });
         const requestBody = {
             merchantId,
             orderId: `ORDER-${payment.id}`,
@@ -267,7 +280,8 @@ let PaymentsService = class PaymentsService {
                     'X-Request-Id': suffix,
                 },
             });
-            payment.transactionId = response.data?.transactionId || `NAGAD-${payment.id}`;
+            payment.transactionId =
+                response.data?.transactionId || `NAGAD-${payment.id}`;
             await this.paymentRepository.save(payment);
             return {
                 paymentId: payment.id,
@@ -284,14 +298,18 @@ let PaymentsService = class PaymentsService {
         }
     }
     async confirmPayment(paymentId, transactionId) {
-        const payment = await this.paymentRepository.findOne({ where: { id: paymentId } });
+        const payment = await this.paymentRepository.findOne({
+            where: { id: paymentId },
+        });
         if (!payment) {
             throw new common_1.NotFoundException('Payment not found');
         }
         payment.status = payment_entity_1.PaymentStatus.COMPLETED;
         payment.transactionId = transactionId || payment.transactionId;
         await this.paymentRepository.save(payment);
-        const order = await this.orderRepository.findOne({ where: { id: payment.orderId } });
+        const order = await this.orderRepository.findOne({
+            where: { id: payment.orderId },
+        });
         if (order) {
             order.paymentStatus = order_entity_1.PaymentStatus.PAID;
             order.status = order_entity_1.OrderStatus.CONFIRMED;
@@ -353,7 +371,9 @@ let PaymentsService = class PaymentsService {
         return { received: true };
     }
     async getPaymentByOrder(orderId) {
-        const payment = await this.paymentRepository.findOne({ where: { orderId } });
+        const payment = await this.paymentRepository.findOne({
+            where: { orderId },
+        });
         if (!payment) {
             throw new common_1.NotFoundException('Payment not found');
         }

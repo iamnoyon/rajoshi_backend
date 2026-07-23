@@ -36,7 +36,11 @@ let DashboardService = class DashboardService {
             .createQueryBuilder('order')
             .select('COALESCE(SUM(order.total), 0)', 'revenue')
             .where('order.status IN (:...statuses)', {
-            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED, order_entity_1.OrderStatus.CONFIRMED],
+            statuses: [
+                order_entity_1.OrderStatus.DELIVERED,
+                order_entity_1.OrderStatus.SHIPPED,
+                order_entity_1.OrderStatus.CONFIRMED,
+            ],
         })
             .getRawOne();
         const totalOrders = await this.orderRepository.count();
@@ -63,12 +67,16 @@ let DashboardService = class DashboardService {
         const targetYear = year || new Date().getFullYear();
         const monthlySales = await this.orderRepository
             .createQueryBuilder('order')
-            .select("EXTRACT(MONTH FROM order.createdAt)", 'month')
+            .select('EXTRACT(MONTH FROM order.createdAt)', 'month')
             .addSelect('COALESCE(SUM(order.total), 0)', 'revenue')
             .addSelect('COUNT(order.id)', 'count')
             .where('EXTRACT(YEAR FROM order.createdAt) = :year', { year: targetYear })
             .andWhere('order.status IN (:...statuses)', {
-            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED, order_entity_1.OrderStatus.CONFIRMED],
+            statuses: [
+                order_entity_1.OrderStatus.DELIVERED,
+                order_entity_1.OrderStatus.SHIPPED,
+                order_entity_1.OrderStatus.CONFIRMED,
+            ],
         })
             .groupBy('month')
             .orderBy('month', 'ASC')
@@ -95,7 +103,11 @@ let DashboardService = class DashboardService {
             .innerJoin('order.items', 'order_item')
             .innerJoin('order_item.product', 'product')
             .where('order.status IN (:...statuses)', {
-            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED, order_entity_1.OrderStatus.CONFIRMED],
+            statuses: [
+                order_entity_1.OrderStatus.DELIVERED,
+                order_entity_1.OrderStatus.SHIPPED,
+                order_entity_1.OrderStatus.CONFIRMED,
+            ],
         })
             .groupBy('order_item.productId')
             .addGroupBy('product.name')
@@ -122,7 +134,11 @@ let DashboardService = class DashboardService {
             .addSelect('COALESCE(SUM(order.total), 0)', 'totalSpent')
             .innerJoin('order.user', 'user')
             .where('order.status IN (:...statuses)', {
-            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED, order_entity_1.OrderStatus.CONFIRMED],
+            statuses: [
+                order_entity_1.OrderStatus.DELIVERED,
+                order_entity_1.OrderStatus.SHIPPED,
+                order_entity_1.OrderStatus.CONFIRMED,
+            ],
         })
             .groupBy('order.userId')
             .addGroupBy('user.name')
@@ -140,7 +156,11 @@ let DashboardService = class DashboardService {
             .select('COALESCE(SUM(order.total), 0)', 'revenue')
             .where('order.createdAt >= :today', { today })
             .andWhere('order.status IN (:...statuses)', {
-            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED, order_entity_1.OrderStatus.CONFIRMED],
+            statuses: [
+                order_entity_1.OrderStatus.DELIVERED,
+                order_entity_1.OrderStatus.SHIPPED,
+                order_entity_1.OrderStatus.CONFIRMED,
+            ],
         })
             .getRawOne();
         const weekAgo = new Date();
@@ -150,7 +170,11 @@ let DashboardService = class DashboardService {
             .select('COALESCE(SUM(order.total), 0)', 'revenue')
             .where('order.createdAt >= :weekAgo', { weekAgo })
             .andWhere('order.status IN (:...statuses)', {
-            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED, order_entity_1.OrderStatus.CONFIRMED],
+            statuses: [
+                order_entity_1.OrderStatus.DELIVERED,
+                order_entity_1.OrderStatus.SHIPPED,
+                order_entity_1.OrderStatus.CONFIRMED,
+            ],
         })
             .getRawOne();
         const monthAgo = new Date();
@@ -160,7 +184,11 @@ let DashboardService = class DashboardService {
             .select('COALESCE(SUM(order.total), 0)', 'revenue')
             .where('order.createdAt >= :monthAgo', { monthAgo })
             .andWhere('order.status IN (:...statuses)', {
-            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED, order_entity_1.OrderStatus.CONFIRMED],
+            statuses: [
+                order_entity_1.OrderStatus.DELIVERED,
+                order_entity_1.OrderStatus.SHIPPED,
+                order_entity_1.OrderStatus.CONFIRMED,
+            ],
         })
             .getRawOne();
         return {

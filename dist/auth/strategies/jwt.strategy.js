@@ -24,14 +24,17 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
     userRepository;
     constructor(configService, userRepository) {
         super({
-            jwtFromRequest: (req) => req.cookies?.access_token || passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken()(req),
+            jwtFromRequest: (req) => req.cookies?.access_token ||
+                passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken()(req),
             ignoreExpiration: false,
             secretOrKey: configService.get('jwt.secret'),
         });
         this.userRepository = userRepository;
     }
     async validate(payload) {
-        const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+        const user = await this.userRepository.findOne({
+            where: { id: payload.sub },
+        });
         if (!user || !user.isActive) {
             throw new common_1.UnauthorizedException('User not found or inactive');
         }

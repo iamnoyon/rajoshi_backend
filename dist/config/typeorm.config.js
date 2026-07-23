@@ -13,6 +13,7 @@ const review_entity_1 = require("../entities/review.entity");
 const wishlist_entity_1 = require("../entities/wishlist.entity");
 const cart_entity_1 = require("../entities/cart.entity");
 const address_entity_1 = require("../entities/address.entity");
+const message_entity_1 = require("../entities/message.entity");
 const typeOrmConfig = (configService) => ({
     type: 'postgres',
     host: configService.get('database.host'),
@@ -33,6 +34,7 @@ const typeOrmConfig = (configService) => ({
         wishlist_entity_1.Wishlist,
         cart_entity_1.Cart,
         address_entity_1.Address,
+        message_entity_1.Message,
     ],
     synchronize: true,
 });

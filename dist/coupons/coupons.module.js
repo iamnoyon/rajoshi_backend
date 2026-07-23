@@ -12,12 +12,13 @@ const typeorm_1 = require("@nestjs/typeorm");
 const coupons_controller_1 = require("./coupons.controller");
 const coupons_service_1 = require("./coupons.service");
 const coupon_entity_1 = require("../entities/coupon.entity");
+const product_entity_1 = require("../entities/product.entity");
 let CouponsModule = class CouponsModule {
 };
 exports.CouponsModule = CouponsModule;
 exports.CouponsModule = CouponsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([coupon_entity_1.Coupon])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([coupon_entity_1.Coupon, product_entity_1.Product])],
         controllers: [coupons_controller_1.CouponsController],
         providers: [coupons_service_1.CouponsService],
         exports: [coupons_service_1.CouponsService],

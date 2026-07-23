@@ -43,7 +43,9 @@ let OrdersService = class OrdersService {
         const orderItems = [];
         let subtotal = 0;
         for (const item of dto.items) {
-            const product = await this.productRepository.findOne({ where: { id: item.productId } });
+            const product = await this.productRepository.findOne({
+                where: { id: item.productId },
+            });
             if (!product) {
                 throw new common_1.NotFoundException(`Product ${item.productId} not found`);
             }
@@ -79,9 +81,10 @@ let OrdersService = class OrdersService {
                 if (coupon.minOrder && subtotal < coupon.minOrder) {
                     throw new common_1.BadRequestException(`Minimum order of ${coupon.minOrder} required`);
                 }
-                discount = coupon.type === coupon_entity_1.CouponType.PERCENTAGE
-                    ? (subtotal * Number(coupon.value)) / 100
-                    : Number(coupon.value);
+                discount =
+                    coupon.type === coupon_entity_1.CouponType.PERCENTAGE
+                        ? (subtotal * Number(coupon.value)) / 100
+                        : Number(coupon.value);
                 discount = Math.min(discount, subtotal);
                 coupon.usedCount += 1;
                 await this.couponRepository.save(coupon);
@@ -146,7 +149,13 @@ let OrdersService = class OrdersService {
     async findOne(id) {
         const order = await this.orderRepository.findOne({
             where: { id },
-            relations: ['items', 'items.product', 'items.product.productImages', 'user', 'payment'],
+            relations: [
+                'items',
+                'items.product',
+                'items.product.productImages',
+                'user',
+                'payment',
+            ],
         });
         if (!order) {
             throw new common_1.NotFoundException('Order not found');
@@ -179,7 +188,8 @@ let OrdersService = class OrdersService {
         if (!order) {
             throw new common_1.NotFoundException('Order not found');
         }
-        if (order.status !== order_entity_1.OrderStatus.PENDING && order.status !== order_entity_1.OrderStatus.CONFIRMED) {
+        if (order.status !== order_entity_1.OrderStatus.PENDING &&
+            order.status !== order_entity_1.OrderStatus.CONFIRMED) {
             throw new common_1.BadRequestException('Order cannot be cancelled at this stage');
         }
         order.status = order_entity_1.OrderStatus.CANCELLED;
@@ -189,7 +199,9 @@ let OrdersService = class OrdersService {
     async restockOrderItems(orderId) {
         const items = await this.orderItemRepository.find({ where: { orderId } });
         for (const item of items) {
-            const product = await this.productRepository.findOne({ where: { id: item.productId } });
+            const product = await this.productRepository.findOne({
+                where: { id: item.productId },
+            });
             if (product) {
                 product.stock += item.quantity;
                 await this.productRepository.save(product);
@@ -201,15 +213,27 @@ let OrdersService = class OrdersService {
     }
     async getOrderStats() {
         const total = await this.orderRepository.count();
-        const pending = await this.orderRepository.count({ where: { status: order_entity_1.OrderStatus.PENDING } });
-        const processing = await this.orderRepository.count({ where: { status: order_entity_1.OrderStatus.PROCESSING } });
-        const shipped = await this.orderRepository.count({ where: { status: order_entity_1.OrderStatus.SHIPPED } });
-        const delivered = await this.orderRepository.count({ where: { status: order_entity_1.OrderStatus.DELIVERED } });
-        const cancelled = await this.orderRepository.count({ where: { status: order_entity_1.OrderStatus.CANCELLED } });
+        const pending = await this.orderRepository.count({
+            where: { status: order_entity_1.OrderStatus.PENDING },
+        });
+        const processing = await this.orderRepository.count({
+            where: { status: order_entity_1.OrderStatus.PROCESSING },
+        });
+        const shipped = await this.orderRepository.count({
+            where: { status: order_entity_1.OrderStatus.SHIPPED },
+        });
+        const delivered = await this.orderRepository.count({
+            where: { status: order_entity_1.OrderStatus.DELIVERED },
+        });
+        const cancelled = await this.orderRepository.count({
+            where: { status: order_entity_1.OrderStatus.CANCELLED },
+        });
         const revenueResult = await this.orderRepository
             .createQueryBuilder('order')
             .select('SUM(order.total)', 'revenue')
-            .where('order.status IN (:...statuses)', { statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED] })
+            .where('order.status IN (:...statuses)', {
+            statuses: [order_entity_1.OrderStatus.DELIVERED, order_entity_1.OrderStatus.SHIPPED],
+        })
             .getRawOne();
         return {
             total,

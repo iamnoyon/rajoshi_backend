@@ -89,7 +89,9 @@ let UsersService = class UsersService {
             throw new common_1.NotFoundException('User not found');
         }
         if (dto.email && dto.email !== user.email) {
-            const existing = await this.userRepository.findOne({ where: { email: dto.email } });
+            const existing = await this.userRepository.findOne({
+                where: { email: dto.email },
+            });
             if (existing) {
                 throw new common_1.ConflictException('Email already in use');
             }
@@ -112,8 +114,12 @@ let UsersService = class UsersService {
     }
     async getStats() {
         const total = await this.userRepository.count();
-        const active = await this.userRepository.count({ where: { isActive: true } });
-        const admins = await this.userRepository.count({ where: { role: user_entity_1.UserRole.ADMIN } });
+        const active = await this.userRepository.count({
+            where: { isActive: true },
+        });
+        const admins = await this.userRepository.count({
+            where: { role: user_entity_1.UserRole.ADMIN },
+        });
         return { total, active, admins };
     }
 };

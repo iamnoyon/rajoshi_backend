@@ -57,7 +57,9 @@ export class ReviewsService {
   }
 
   async create(userId: string, dto: CreateReviewDto) {
-    const product = await this.productRepository.findOne({ where: { id: dto.productId } });
+    const product = await this.productRepository.findOne({
+      where: { id: dto.productId },
+    });
     if (!product) {
       throw new NotFoundException('Product not found');
     }
@@ -80,7 +82,9 @@ export class ReviewsService {
   }
 
   async update(userId: string, reviewId: string, dto: UpdateReviewDto) {
-    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+    const review = await this.reviewRepository.findOne({
+      where: { id: reviewId },
+    });
     if (!review) {
       throw new NotFoundException('Review not found');
     }
@@ -95,7 +99,9 @@ export class ReviewsService {
   }
 
   async delete(userId: string, reviewId: string) {
-    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+    const review = await this.reviewRepository.findOne({
+      where: { id: reviewId },
+    });
     if (!review) {
       throw new NotFoundException('Review not found');
     }
@@ -107,7 +113,9 @@ export class ReviewsService {
   }
 
   async approve(reviewId: string) {
-    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+    const review = await this.reviewRepository.findOne({
+      where: { id: reviewId },
+    });
     if (!review) {
       throw new NotFoundException('Review not found');
     }
@@ -116,7 +124,9 @@ export class ReviewsService {
   }
 
   async hide(reviewId: string) {
-    const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+    const review = await this.reviewRepository.findOne({
+      where: { id: reviewId },
+    });
     if (!review) {
       throw new NotFoundException('Review not found');
     }

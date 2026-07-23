@@ -19,6 +19,7 @@ import { CouponsModule } from './coupons/coupons.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { UploadModule } from './upload/upload.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     WishlistModule,
     UploadModule,
     DashboardModule,
+    SocketModule,
   ],
   providers: [SeedService],
 })

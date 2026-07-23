@@ -56,7 +56,9 @@ __decorate([
     __metadata("design:type", String)
 ], Category.prototype, "parentId", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Category, (category) => category.children, { nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => Category, (category) => category.children, {
+        nullable: true,
+    }),
     (0, typeorm_1.JoinColumn)({ name: 'parentId' }),
     __metadata("design:type", Category)
 ], Category.prototype, "parent", void 0);

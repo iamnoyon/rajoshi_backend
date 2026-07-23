@@ -12,6 +12,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
+import { PreviewOrderDto } from './dto/preview-order.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Public } from '../common/decorators/public.decorator';
 import { UserRole } from '../entities/user.entity';
@@ -30,12 +31,11 @@ export class CouponsController {
     return this.couponsService.findAll(query.page, query.limit);
   }
 
-  @Get(':id')
-  @Roles(UserRole.ADMIN)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get coupon by ID (Admin)' })
-  findOne(@Param('id') id: string) {
-    return this.couponsService.findOne(id);
+  @Public()
+  @Get('available')
+  @ApiOperation({ summary: 'Get available coupons for customers' })
+  findAvailableCoupons() {
+    return this.couponsService.findAvailableCoupons();
   }
 
   @Public()
@@ -43,6 +43,14 @@ export class CouponsController {
   @ApiOperation({ summary: 'Get coupon by code' })
   findByCode(@Param('code') code: string) {
     return this.couponsService.findByCode(code);
+  }
+
+  @Get(':id')
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get coupon by ID (Admin)' })
+  findOne(@Param('id') id: string) {
+    return this.couponsService.findOne(id);
   }
 
   @Post()
@@ -69,9 +77,19 @@ export class CouponsController {
     return this.couponsService.remove(id);
   }
 
+  @Public()
+  @Post('preview')
+  @ApiOperation({ summary: 'Preview order with coupon' })
+  previewOrder(@Body() dto: PreviewOrderDto) {
+    return this.couponsService.previewOrder(dto);
+  }
+
   @Post('validate')
   @ApiOperation({ summary: 'Validate coupon' })
-  validateCoupon(@Body('code') code: string, @Body('orderTotal') orderTotal: number) {
+  validateCoupon(
+    @Body('code') code: string,
+    @Body('orderTotal') orderTotal: number,
+  ) {
     return this.couponsService.validateCoupon(code, orderTotal);
   }
 }

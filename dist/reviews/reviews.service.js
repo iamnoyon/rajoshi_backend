@@ -59,7 +59,9 @@ let ReviewsService = class ReviewsService {
         };
     }
     async create(userId, dto) {
-        const product = await this.productRepository.findOne({ where: { id: dto.productId } });
+        const product = await this.productRepository.findOne({
+            where: { id: dto.productId },
+        });
         if (!product) {
             throw new common_1.NotFoundException('Product not found');
         }
@@ -78,7 +80,9 @@ let ReviewsService = class ReviewsService {
         return this.reviewRepository.save(review);
     }
     async update(userId, reviewId, dto) {
-        const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+        const review = await this.reviewRepository.findOne({
+            where: { id: reviewId },
+        });
         if (!review) {
             throw new common_1.NotFoundException('Review not found');
         }
@@ -92,7 +96,9 @@ let ReviewsService = class ReviewsService {
         return this.reviewRepository.save(review);
     }
     async delete(userId, reviewId) {
-        const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+        const review = await this.reviewRepository.findOne({
+            where: { id: reviewId },
+        });
         if (!review) {
             throw new common_1.NotFoundException('Review not found');
         }
@@ -103,7 +109,9 @@ let ReviewsService = class ReviewsService {
         return { message: 'Review deleted successfully' };
     }
     async approve(reviewId) {
-        const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+        const review = await this.reviewRepository.findOne({
+            where: { id: reviewId },
+        });
         if (!review) {
             throw new common_1.NotFoundException('Review not found');
         }
@@ -111,7 +119,9 @@ let ReviewsService = class ReviewsService {
         return this.reviewRepository.save(review);
     }
     async hide(reviewId) {
-        const review = await this.reviewRepository.findOne({ where: { id: reviewId } });
+        const review = await this.reviewRepository.findOne({
+            where: { id: reviewId },
+        });
         if (!review) {
             throw new common_1.NotFoundException('Review not found');
         }

@@ -20,11 +20,15 @@ export class SeedService implements OnApplicationBootstrap {
   }
 
   private async seedAdmin() {
-    const adminEmail = this.configService.get<string>('ADMIN_EMAIL') || 'admin@example.com';
-    const adminPassword = this.configService.get<string>('ADMIN_PASSWORD') || 'admin123';
+    const adminEmail =
+      this.configService.get<string>('ADMIN_EMAIL') || 'admin@example.com';
+    const adminPassword =
+      this.configService.get<string>('ADMIN_PASSWORD') || 'admin123';
     const adminName = this.configService.get<string>('ADMIN_NAME') || 'Admin';
 
-    const existing = await this.userRepository.findOne({ where: { email: adminEmail.toLowerCase() } });
+    const existing = await this.userRepository.findOne({
+      where: { email: adminEmail.toLowerCase() },
+    });
     if (existing) {
       this.logger.log('Admin user already exists, skipping seed.');
       return;

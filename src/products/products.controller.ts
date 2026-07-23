@@ -10,7 +10,13 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -46,7 +52,12 @@ export class ProductsController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
-    return this.productsService.findByCategory(categoryId, categoryName, page || 1, limit || 10);
+    return this.productsService.findByCategory(
+      categoryId,
+      categoryName,
+      page || 1,
+      limit || 10,
+    );
   }
 
   @Public()

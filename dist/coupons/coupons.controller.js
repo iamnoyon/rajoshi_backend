@@ -18,6 +18,7 @@ const swagger_1 = require("@nestjs/swagger");
 const coupons_service_1 = require("./coupons.service");
 const create_coupon_dto_1 = require("./dto/create-coupon.dto");
 const update_coupon_dto_1 = require("./dto/update-coupon.dto");
+const preview_order_dto_1 = require("./dto/preview-order.dto");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
 const public_decorator_1 = require("../common/decorators/public.decorator");
 const user_entity_1 = require("../entities/user.entity");
@@ -30,11 +31,14 @@ let CouponsController = class CouponsController {
     findAll(query) {
         return this.couponsService.findAll(query.page, query.limit);
     }
-    findOne(id) {
-        return this.couponsService.findOne(id);
+    findAvailableCoupons() {
+        return this.couponsService.findAvailableCoupons();
     }
     findByCode(code) {
         return this.couponsService.findByCode(code);
+    }
+    findOne(id) {
+        return this.couponsService.findOne(id);
     }
     create(dto) {
         return this.couponsService.create(dto);
@@ -44,6 +48,9 @@ let CouponsController = class CouponsController {
     }
     remove(id) {
         return this.couponsService.remove(id);
+    }
+    previewOrder(dto) {
+        return this.couponsService.previewOrder(dto);
     }
     validateCoupon(code, orderTotal) {
         return this.couponsService.validateCoupon(code, orderTotal);
@@ -61,15 +68,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CouponsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    (0, roles_decorator_1.Roles)(user_entity_1.UserRole.ADMIN),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get coupon by ID (Admin)' }),
-    __param(0, (0, common_1.Param)('id')),
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Get)('available'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get available coupons for customers' }),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], CouponsController.prototype, "findOne", null);
+], CouponsController.prototype, "findAvailableCoupons", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)('code/:code'),
@@ -79,6 +84,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CouponsController.prototype, "findByCode", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, roles_decorator_1.Roles)(user_entity_1.UserRole.ADMIN),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get coupon by ID (Admin)' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], CouponsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
     (0, roles_decorator_1.Roles)(user_entity_1.UserRole.ADMIN),
@@ -110,6 +125,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CouponsController.prototype, "remove", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.Post)('preview'),
+    (0, swagger_1.ApiOperation)({ summary: 'Preview order with coupon' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [preview_order_dto_1.PreviewOrderDto]),
+    __metadata("design:returntype", void 0)
+], CouponsController.prototype, "previewOrder", null);
 __decorate([
     (0, common_1.Post)('validate'),
     (0, swagger_1.ApiOperation)({ summary: 'Validate coupon' }),

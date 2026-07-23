@@ -8,8 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Payment, PaymentMethod, PaymentStatus } from '../entities/payment.entity';
-import { Order, OrderStatus, PaymentStatus as OrderPaymentStatus } from '../entities/order.entity';
+import {
+  Payment,
+  PaymentMethod,
+  PaymentStatus,
+} from '../entities/payment.entity';
+import {
+  Order,
+  OrderStatus,
+  PaymentStatus as OrderPaymentStatus,
+} from '../entities/order.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -22,7 +30,9 @@ export class PaymentsService {
   ) {}
 
   async createPayment(orderId: string, method: PaymentMethod) {
-    const order = await this.orderRepository.findOne({ where: { id: orderId } });
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+    });
     if (!order) {
       throw new NotFoundException('Order not found');
     }
@@ -102,7 +112,9 @@ export class PaymentsService {
 
   private async initiateSslcommerzPayment(payment: Payment) {
     const storeId = this.configService.get<string>('sslcommerz.storeId');
-    const storePassword = this.configService.get<string>('sslcommerz.storePassword');
+    const storePassword = this.configService.get<string>(
+      'sslcommerz.storePassword',
+    );
 
     if (!storeId || storeId === 'your-store-id') {
       return {
@@ -112,7 +124,9 @@ export class PaymentsService {
       };
     }
 
-    const order = await this.orderRepository.findOne({ where: { id: payment.orderId } });
+    const order = await this.orderRepository.findOne({
+      where: { id: payment.orderId },
+    });
     const postData = {
       store_id: storeId,
       store_passwd: storePassword,
@@ -133,7 +147,7 @@ export class PaymentsService {
     try {
       const https = require('https');
       const querystring = require('querystring');
-      
+
       const formData = querystring.stringify(postData);
       const options = {
         hostname: 'sandbox.sslcommerz.com',
@@ -149,7 +163,9 @@ export class PaymentsService {
       return new Promise<any>((resolve) => {
         const req = https.request(options, (res: any) => {
           let data = '';
-          res.on('data', (chunk: string) => { data += chunk; });
+          res.on('data', (chunk: string) => {
+            data += chunk;
+          });
           res.on('end', () => {
             try {
               const response = JSON.parse(data);
@@ -201,7 +217,10 @@ export class PaymentsService {
       const https = require('https');
 
       const tokenResponse = await new Promise<any>((resolve) => {
-        const authData = JSON.stringify({ app_key: appKey, app_secret: appSecret });
+        const authData = JSON.stringify({
+          app_key: appKey,
+          app_secret: appSecret,
+        });
         const options = {
           hostname: 'tokenized.sandbox.bka.sh',
           port: 443,
@@ -215,10 +234,15 @@ export class PaymentsService {
 
         const req = https.request(options, (res: any) => {
           let data = '';
-          res.on('data', (chunk: string) => { data += chunk; });
+          res.on('data', (chunk: string) => {
+            data += chunk;
+          });
           res.on('end', () => {
-            try { resolve(JSON.parse(data)); }
-            catch { resolve(null); }
+            try {
+              resolve(JSON.parse(data));
+            } catch {
+              resolve(null);
+            }
           });
         });
         req.on('error', () => resolve(null));
@@ -258,7 +282,9 @@ export class PaymentsService {
     const timestamp = new Date().getTime().toString();
     const suffix = timestamp;
 
-    const order = await this.orderRepository.findOne({ where: { id: payment.orderId } });
+    const order = await this.orderRepository.findOne({
+      where: { id: payment.orderId },
+    });
 
     const requestBody = {
       merchantId,
@@ -287,7 +313,8 @@ export class PaymentsService {
         },
       );
 
-      payment.transactionId = response.data?.transactionId || `NAGAD-${payment.id}`;
+      payment.transactionId =
+        response.data?.transactionId || `NAGAD-${payment.id}`;
       await this.paymentRepository.save(payment);
 
       return {
@@ -305,7 +332,9 @@ export class PaymentsService {
   }
 
   async confirmPayment(paymentId: string, transactionId: string) {
-    const payment = await this.paymentRepository.findOne({ where: { id: paymentId } });
+    const payment = await this.paymentRepository.findOne({
+      where: { id: paymentId },
+    });
     if (!payment) {
       throw new NotFoundException('Payment not found');
     }
@@ -314,7 +343,9 @@ export class PaymentsService {
     payment.transactionId = transactionId || payment.transactionId;
     await this.paymentRepository.save(payment);
 
-    const order = await this.orderRepository.findOne({ where: { id: payment.orderId } });
+    const order = await this.orderRepository.findOne({
+      where: { id: payment.orderId },
+    });
     if (order) {
       order.paymentStatus = OrderPaymentStatus.PAID;
       order.status = OrderStatus.CONFIRMED;
@@ -325,12 +356,20 @@ export class PaymentsService {
   }
 
   async handleStripeWebhook(payload: any, signature: string) {
-    const webhookSecret = this.configService.get<string>('stripe.webhookSecret');
+    const webhookSecret = this.configService.get<string>(
+      'stripe.webhookSecret',
+    );
     if (webhookSecret && webhookSecret !== 'your-webhook-secret') {
       const Stripe = require('stripe');
-      const stripe = new Stripe(this.configService.get<string>('stripe.secretKey'));
+      const stripe = new Stripe(
+        this.configService.get<string>('stripe.secretKey'),
+      );
       try {
-        const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+        const event = stripe.webhooks.constructEvent(
+          payload,
+          signature,
+          webhookSecret,
+        );
         if (event.type === 'checkout.session.completed') {
           const session = event.data.object;
           const paymentId = session.metadata?.paymentId;
@@ -340,7 +379,10 @@ export class PaymentsService {
         }
         return { received: true };
       } catch {
-        throw new HttpException('Webhook signature verification failed', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'Webhook signature verification failed',
+          HttpStatus.BAD_REQUEST,
+        );
       }
     }
     return { received: true };
@@ -381,7 +423,9 @@ export class PaymentsService {
   }
 
   async getPaymentByOrder(orderId: string) {
-    const payment = await this.paymentRepository.findOne({ where: { orderId } });
+    const payment = await this.paymentRepository.findOne({
+      where: { orderId },
+    });
     if (!payment) {
       throw new NotFoundException('Payment not found');
     }

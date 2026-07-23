@@ -54,7 +54,7 @@ export class CategoriesService {
 
   async getNestedCategories() {
     const categories = await this.categoryRepository.find({
-      where: { parentId: '' as any },
+      where: { parentId: '' },
       relations: ['children', 'children.children'],
       order: { name: 'ASC' },
     });
@@ -62,7 +62,9 @@ export class CategoriesService {
   }
 
   async create(dto: CreateCategoryDto) {
-    const existing = await this.categoryRepository.findOne({ where: { slug: dto.slug } });
+    const existing = await this.categoryRepository.findOne({
+      where: { slug: dto.slug },
+    });
     if (existing) {
       throw new ConflictException('Category slug already exists');
     }
@@ -78,7 +80,9 @@ export class CategoriesService {
     }
 
     if (dto.slug && dto.slug !== category.slug) {
-      const existing = await this.categoryRepository.findOne({ where: { slug: dto.slug } });
+      const existing = await this.categoryRepository.findOne({
+        where: { slug: dto.slug },
+      });
       if (existing) {
         throw new ConflictException('Category slug already exists');
       }

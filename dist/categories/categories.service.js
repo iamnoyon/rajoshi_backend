@@ -63,7 +63,9 @@ let CategoriesService = class CategoriesService {
         return categories;
     }
     async create(dto) {
-        const existing = await this.categoryRepository.findOne({ where: { slug: dto.slug } });
+        const existing = await this.categoryRepository.findOne({
+            where: { slug: dto.slug },
+        });
         if (existing) {
             throw new common_1.ConflictException('Category slug already exists');
         }
@@ -76,7 +78,9 @@ let CategoriesService = class CategoriesService {
             throw new common_1.NotFoundException('Category not found');
         }
         if (dto.slug && dto.slug !== category.slug) {
-            const existing = await this.categoryRepository.findOne({ where: { slug: dto.slug } });
+            const existing = await this.categoryRepository.findOne({
+                where: { slug: dto.slug },
+            });
             if (existing) {
                 throw new common_1.ConflictException('Category slug already exists');
             }

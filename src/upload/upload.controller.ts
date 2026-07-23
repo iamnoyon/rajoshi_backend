@@ -7,7 +7,13 @@ import {
   UseInterceptors,
   Body,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -36,7 +42,9 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Upload single image (Admin)' })
   uploadSingle(@UploadedFile() file: Express.Multer.File) {
-    console.log(`[Upload Controller] POST /upload/single - file: ${file?.originalname}`);
+    console.log(
+      `[Upload Controller] POST /upload/single - file: ${file?.originalname}`,
+    );
     return this.uploadService.uploadSingle(file);
   }
 
@@ -59,7 +67,9 @@ export class UploadController {
   @UseInterceptors(FilesInterceptor('files', 10))
   @ApiOperation({ summary: 'Upload multiple images (Admin)' })
   uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
-    console.log(`[Upload Controller] POST /upload/multiple - files: ${files?.length}`);
+    console.log(
+      `[Upload Controller] POST /upload/multiple - files: ${files?.length}`,
+    );
     return this.uploadService.uploadMultiple(files);
   }
 

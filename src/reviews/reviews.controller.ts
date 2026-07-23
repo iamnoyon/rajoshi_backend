@@ -30,7 +30,11 @@ export class ReviewsController {
     @Param('productId') productId: string,
     @Query() query: PaginationDto,
   ) {
-    return this.reviewsService.findByProduct(productId, query.page, query.limit);
+    return this.reviewsService.findByProduct(
+      productId,
+      query.page,
+      query.limit,
+    );
   }
 
   @Get()

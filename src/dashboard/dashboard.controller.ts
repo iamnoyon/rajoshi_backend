@@ -20,7 +20,9 @@ export class DashboardController {
   @Get('monthly-sales/:year')
   @ApiOperation({ summary: 'Get monthly sales (Admin)' })
   getMonthlySales(@Param('year') year: string) {
-    return this.dashboardService.getMonthlySales(year ? parseInt(year) : undefined);
+    return this.dashboardService.getMonthlySales(
+      year ? parseInt(year) : undefined,
+    );
   }
 
   @Get('best-selling')

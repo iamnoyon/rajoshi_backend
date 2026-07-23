@@ -9,7 +9,9 @@ import { Cart } from '../entities/cart.entity';
 import { Coupon } from '../entities/coupon.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, OrderItem, Product, Cart, Coupon])],
+  imports: [
+    TypeOrmModule.forFeature([Order, OrderItem, Product, Cart, Coupon]),
+  ],
   controllers: [OrdersController],
   providers: [OrdersService],
   exports: [OrdersService],

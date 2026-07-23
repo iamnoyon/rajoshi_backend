@@ -26,7 +26,9 @@ export class WishlistService {
   }
 
   async add(userId: string, productId: string) {
-    const product = await this.productRepository.findOne({ where: { id: productId } });
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
     if (!product) {
       throw new NotFoundException('Product not found');
     }

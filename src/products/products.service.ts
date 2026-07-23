@@ -22,7 +22,17 @@ export class ProductsService {
   ) {}
 
   async findAll(query: ProductQueryDto) {
-    const { search, categoryId, minPrice, maxPrice, isFeatured, sort, tag, page = 1, limit = 10 } = query;
+    const {
+      search,
+      categoryId,
+      minPrice,
+      maxPrice,
+      isFeatured,
+      sort,
+      tag,
+      page = 1,
+      limit = 10,
+    } = query;
     const skip = (page - 1) * limit;
 
     if (tag === ProductTag.BEST_SELLER) {
@@ -105,7 +115,10 @@ export class ProductsService {
     if (sort) {
       const [field, dir] = sort.split(':');
       if (field && dir) {
-        qb.orderBy(`product.${field}`, dir.toUpperCase() === 'ASC' ? 'ASC' : 'DESC');
+        qb.orderBy(
+          `product.${field}`,
+          dir.toUpperCase() === 'ASC' ? 'ASC' : 'DESC',
+        );
       }
     }
 
@@ -122,7 +135,12 @@ export class ProductsService {
     };
   }
 
-  async findByCategory(categoryId?: string, categoryName?: string, page = 1, limit = 10) {
+  async findByCategory(
+    categoryId?: string,
+    categoryName?: string,
+    page = 1,
+    limit = 10,
+  ) {
     const skip = (page - 1) * limit;
 
     const qb = this.productRepository
@@ -135,12 +153,12 @@ export class ProductsService {
     if (categoryId) {
       qb.andWhere('product.categoryId = :categoryId', { categoryId });
     } else if (categoryName) {
-      qb.andWhere('category.name ILIKE :categoryName', { categoryName: `%${categoryName}%` });
+      qb.andWhere('category.name ILIKE :categoryName', {
+        categoryName: `%${categoryName}%`,
+      });
     }
 
-    qb.orderBy('product.createdAt', 'DESC')
-      .skip(skip)
-      .take(limit);
+    qb.orderBy('product.createdAt', 'DESC').skip(skip).take(limit);
 
     const [products, total] = await qb.getManyAndCount();
 
@@ -191,12 +209,16 @@ export class ProductsService {
   }
 
   async create(dto: CreateProductDto) {
-    const existingSlug = await this.productRepository.findOne({ where: { slug: dto.slug } });
+    const existingSlug = await this.productRepository.findOne({
+      where: { slug: dto.slug },
+    });
     if (existingSlug) {
       throw new ConflictException('Product slug already exists');
     }
 
-    const existingSku = await this.productRepository.findOne({ where: { sku: dto.sku } });
+    const existingSku = await this.productRepository.findOne({
+      where: { sku: dto.sku },
+    });
     if (existingSku) {
       throw new ConflictException('Product SKU already exists');
     }
@@ -212,14 +234,18 @@ export class ProductsService {
     }
 
     if (dto.slug && dto.slug !== product.slug) {
-      const existing = await this.productRepository.findOne({ where: { slug: dto.slug } });
+      const existing = await this.productRepository.findOne({
+        where: { slug: dto.slug },
+      });
       if (existing) {
         throw new ConflictException('Product slug already exists');
       }
     }
 
     if (dto.sku && dto.sku !== product.sku) {
-      const existing = await this.productRepository.findOne({ where: { sku: dto.sku } });
+      const existing = await this.productRepository.findOne({
+        where: { sku: dto.sku },
+      });
       if (existing) {
         throw new ConflictException('Product SKU already exists');
       }
@@ -248,7 +274,9 @@ export class ProductsService {
   }
 
   async uploadImages(productId: string, files: Express.Multer.File[]) {
-    const product = await this.productRepository.findOne({ where: { id: productId } });
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
     if (!product) {
       throw new NotFoundException('Product not found');
     }
@@ -265,7 +293,9 @@ export class ProductsService {
   }
 
   async deleteImage(imageId: string) {
-    const image = await this.productImageRepository.findOne({ where: { id: imageId } });
+    const image = await this.productImageRepository.findOne({
+      where: { id: imageId },
+    });
     if (!image) {
       throw new NotFoundException('Image not found');
     }

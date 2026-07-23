@@ -59,10 +59,7 @@ export class CartController {
 
   @Post('apply-coupon')
   @ApiOperation({ summary: 'Apply coupon to cart' })
-  applyCoupon(
-    @CurrentUser('id') userId: string,
-    @Body() dto: ApplyCouponDto,
-  ) {
+  applyCoupon(@CurrentUser('id') userId: string, @Body() dto: ApplyCouponDto) {
     return this.cartService.applyCoupon(userId, dto.code);
   }
 }

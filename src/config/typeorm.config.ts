@@ -12,6 +12,7 @@ import { Review } from '../entities/review.entity';
 import { Wishlist } from '../entities/wishlist.entity';
 import { Cart } from '../entities/cart.entity';
 import { Address } from '../entities/address.entity';
+import { Message } from 'src/entities/message.entity';
 
 export const typeOrmConfig = (
   configService: ConfigService,
@@ -35,6 +36,7 @@ export const typeOrmConfig = (
     Wishlist,
     Cart,
     Address,
+    Message,
   ],
   synchronize: true,
 });

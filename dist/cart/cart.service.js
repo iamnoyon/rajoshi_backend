@@ -39,10 +39,16 @@ let CartService = class CartService {
             const price = item.product.discountPrice || item.product.price;
             return sum + Number(price) * item.quantity;
         }, 0);
-        return { items, subtotal, totalItems: items.reduce((sum, item) => sum + item.quantity, 0) };
+        return {
+            items,
+            subtotal,
+            totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
+        };
     }
     async addToCart(userId, dto) {
-        const product = await this.productRepository.findOne({ where: { id: dto.productId } });
+        const product = await this.productRepository.findOne({
+            where: { id: dto.productId },
+        });
         if (!product) {
             throw new common_1.NotFoundException('Product not found');
         }
@@ -101,7 +107,9 @@ let CartService = class CartService {
         return { message: 'Cart cleared' };
     }
     async applyCoupon(userId, code) {
-        const coupon = await this.couponRepository.findOne({ where: { code, isActive: true } });
+        const coupon = await this.couponRepository.findOne({
+            where: { code, isActive: true },
+        });
         if (!coupon) {
             throw new common_1.NotFoundException('Invalid coupon code');
         }

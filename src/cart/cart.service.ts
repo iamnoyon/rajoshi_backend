@@ -35,11 +35,17 @@ export class CartService {
       return sum + Number(price) * item.quantity;
     }, 0);
 
-    return { items, subtotal, totalItems: items.reduce((sum, item) => sum + item.quantity, 0) };
+    return {
+      items,
+      subtotal,
+      totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
+    };
   }
 
   async addToCart(userId: string, dto: AddToCartDto) {
-    const product = await this.productRepository.findOne({ where: { id: dto.productId } });
+    const product = await this.productRepository.findOne({
+      where: { id: dto.productId },
+    });
     if (!product) {
       throw new NotFoundException('Product not found');
     }
@@ -106,7 +112,9 @@ export class CartService {
   }
 
   async applyCoupon(userId: string, code: string) {
-    const coupon = await this.couponRepository.findOne({ where: { code, isActive: true } });
+    const coupon = await this.couponRepository.findOne({
+      where: { code, isActive: true },
+    });
     if (!coupon) {
       throw new NotFoundException('Invalid coupon code');
     }
@@ -121,7 +129,9 @@ export class CartService {
 
     const cart = await this.getCart(userId);
     if (coupon.minOrder && cart.subtotal < coupon.minOrder) {
-      throw new BadRequestException(`Minimum order amount of ${coupon.minOrder} required`);
+      throw new BadRequestException(
+        `Minimum order amount of ${coupon.minOrder} required`,
+      );
     }
 
     let discount = 0;

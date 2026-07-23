@@ -27,9 +27,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
         typeof exceptionResponse === 'string'
           ? exceptionResponse
           : (exceptionResponse as any).message || message;
-      this.logger.warn(`[${request.method}] ${request.url} - ${status} ${message}`);
+      this.logger.warn(
+        `[${request.method}] ${request.url} - ${status} ${message}`,
+      );
     } else if (exception instanceof Error) {
-      this.logger.error(`Unhandled error: ${exception.message}`, exception.stack);
+      this.logger.error(
+        `Unhandled error: ${exception.message}`,
+        exception.stack,
+      );
     }
 
     response.status(status).json({

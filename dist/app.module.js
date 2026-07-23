@@ -31,6 +31,7 @@ const coupons_module_1 = require("./coupons/coupons.module");
 const wishlist_module_1 = require("./wishlist/wishlist.module");
 const upload_module_1 = require("./upload/upload.module");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
+const socket_module_1 = require("./socket/socket.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -65,6 +66,7 @@ exports.AppModule = AppModule = __decorate([
             wishlist_module_1.WishlistModule,
             upload_module_1.UploadModule,
             dashboard_module_1.DashboardModule,
+            socket_module_1.SocketModule,
         ],
         providers: [seed_service_1.SeedService],
     })

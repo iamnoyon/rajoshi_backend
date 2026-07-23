@@ -27,7 +27,7 @@ let ProductsService = class ProductsService {
         this.productImageRepository = productImageRepository;
     }
     async findAll(query) {
-        const { search, categoryId, minPrice, maxPrice, isFeatured, sort, tag, page = 1, limit = 10 } = query;
+        const { search, categoryId, minPrice, maxPrice, isFeatured, sort, tag, page = 1, limit = 10, } = query;
         const skip = (page - 1) * limit;
         if (tag === product_query_dto_1.ProductTag.BEST_SELLER) {
             const sumExpr = 'COALESCE(SUM(orderItems.quantity), 0)';
@@ -122,11 +122,11 @@ let ProductsService = class ProductsService {
             qb.andWhere('product.categoryId = :categoryId', { categoryId });
         }
         else if (categoryName) {
-            qb.andWhere('category.name ILIKE :categoryName', { categoryName: `%${categoryName}%` });
+            qb.andWhere('category.name ILIKE :categoryName', {
+                categoryName: `%${categoryName}%`,
+            });
         }
-        qb.orderBy('product.createdAt', 'DESC')
-            .skip(skip)
-            .take(limit);
+        qb.orderBy('product.createdAt', 'DESC').skip(skip).take(limit);
         const [products, total] = await qb.getManyAndCount();
         return {
             content: products,
@@ -170,11 +170,15 @@ let ProductsService = class ProductsService {
         return product;
     }
     async create(dto) {
-        const existingSlug = await this.productRepository.findOne({ where: { slug: dto.slug } });
+        const existingSlug = await this.productRepository.findOne({
+            where: { slug: dto.slug },
+        });
         if (existingSlug) {
             throw new common_1.ConflictException('Product slug already exists');
         }
-        const existingSku = await this.productRepository.findOne({ where: { sku: dto.sku } });
+        const existingSku = await this.productRepository.findOne({
+            where: { sku: dto.sku },
+        });
         if (existingSku) {
             throw new common_1.ConflictException('Product SKU already exists');
         }
@@ -187,13 +191,17 @@ let ProductsService = class ProductsService {
             throw new common_1.NotFoundException('Product not found');
         }
         if (dto.slug && dto.slug !== product.slug) {
-            const existing = await this.productRepository.findOne({ where: { slug: dto.slug } });
+            const existing = await this.productRepository.findOne({
+                where: { slug: dto.slug },
+            });
             if (existing) {
                 throw new common_1.ConflictException('Product slug already exists');
             }
         }
         if (dto.sku && dto.sku !== product.sku) {
-            const existing = await this.productRepository.findOne({ where: { sku: dto.sku } });
+            const existing = await this.productRepository.findOne({
+                where: { sku: dto.sku },
+            });
             if (existing) {
                 throw new common_1.ConflictException('Product SKU already exists');
             }
@@ -218,7 +226,9 @@ let ProductsService = class ProductsService {
         return this.productRepository.save(product);
     }
     async uploadImages(productId, files) {
-        const product = await this.productRepository.findOne({ where: { id: productId } });
+        const product = await this.productRepository.findOne({
+            where: { id: productId },
+        });
         if (!product) {
             throw new common_1.NotFoundException('Product not found');
         }
@@ -232,7 +242,9 @@ let ProductsService = class ProductsService {
         return this.productImageRepository.save(images);
     }
     async deleteImage(imageId) {
-        const image = await this.productImageRepository.findOne({ where: { id: imageId } });
+        const image = await this.productImageRepository.findOne({
+            where: { id: imageId },
+        });
         if (!image) {
             throw new common_1.NotFoundException('Image not found');
         }
