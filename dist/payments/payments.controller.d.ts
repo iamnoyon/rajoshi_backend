@@ -1,10 +1,10 @@
 import type { Request } from 'express';
 import { PaymentsService } from './payments.service';
-import { PaymentMethod } from '../entities/payment.entity';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 export declare class PaymentsController {
     private paymentsService;
     constructor(paymentsService: PaymentsService);
-    createPayment(orderId: string, method: PaymentMethod): Promise<any>;
+    createPayment(orderId: string, dto: CreatePaymentDto): Promise<any>;
     confirmPayment(paymentId: string, transactionId: string): Promise<{
         message: string;
     }>;

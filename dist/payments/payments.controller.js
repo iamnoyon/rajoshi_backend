@@ -16,15 +16,15 @@ exports.PaymentsController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const payments_service_1 = require("./payments.service");
-const payment_entity_1 = require("../entities/payment.entity");
+const create_payment_dto_1 = require("./dto/create-payment.dto");
 const public_decorator_1 = require("../common/decorators/public.decorator");
 let PaymentsController = class PaymentsController {
     paymentsService;
     constructor(paymentsService) {
         this.paymentsService = paymentsService;
     }
-    createPayment(orderId, method) {
-        return this.paymentsService.createPayment(orderId, method);
+    createPayment(orderId, dto) {
+        return this.paymentsService.createPayment(orderId, dto.method);
     }
     confirmPayment(paymentId, transactionId) {
         return this.paymentsService.confirmPayment(paymentId, transactionId);
@@ -51,9 +51,9 @@ __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Create payment for order' }),
     __param(0, (0, common_1.Param)('orderId')),
-    __param(1, (0, common_1.Body)('method')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, create_payment_dto_1.CreatePaymentDto]),
     __metadata("design:returntype", void 0)
 ], PaymentsController.prototype, "createPayment", null);
 __decorate([

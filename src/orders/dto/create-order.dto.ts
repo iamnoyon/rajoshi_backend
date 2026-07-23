@@ -4,6 +4,7 @@ import {
   ValidateNested,
   IsOptional,
   IsObject,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ class OrderItemDto {
   productId: string;
 
   @ApiProperty()
+  @IsNumber()
   @Type(() => Number)
   quantity: number;
 }

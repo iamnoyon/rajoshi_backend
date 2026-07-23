@@ -24,6 +24,7 @@ __decorate([
 ], OrderItemDto.prototype, "productId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
 ], OrderItemDto.prototype, "quantity", void 0);

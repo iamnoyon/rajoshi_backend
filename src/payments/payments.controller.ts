@@ -11,6 +11,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { PaymentsService } from './payments.service';
 import { PaymentMethod } from '../entities/payment.entity';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
 
@@ -24,9 +25,9 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Create payment for order' })
   createPayment(
     @Param('orderId') orderId: string,
-    @Body('method') method: PaymentMethod,
+    @Body() dto: CreatePaymentDto,
   ) {
-    return this.paymentsService.createPayment(orderId, method);
+    return this.paymentsService.createPayment(orderId, dto.method);
   }
 
   @Post(':paymentId/confirm')
